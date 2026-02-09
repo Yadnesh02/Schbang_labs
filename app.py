@@ -193,7 +193,7 @@ st.markdown("""
         margin-top: 5px !important;
         margin-bottom: 1.5rem;
         width: 100% !important;
-        height: 285px !important;
+        height: 270px !important;
         overflow: hidden;
         box-sizing: border-box;
     }
@@ -275,6 +275,47 @@ st.markdown("""
     /* Unified Single-Row Header Styling */
     [data-testid="stMultiSelect"] label {
         display: none !important;
+    }
+
+    /* Fix text color visibility in filters and inputs */
+    [data-testid="stMultiSelect"] div[data-baseweb="select"] {
+        color: #E7E9EA !important;
+    }
+    
+    [data-testid="stMultiSelect"] input {
+        color: #E7E9EA !important;
+    }
+    
+    [data-testid="stMultiSelect"] span {
+        color: #E7E9EA !important;
+    }
+    
+    /* Fix dropdown menu text */
+    [role="listbox"] {
+        background-color: #16181C !important;
+    }
+    
+    [role="option"] {
+        color: #E7E9EA !important;
+        background-color: #16181C !important;
+    }
+    
+    [role="option"]:hover {
+        background-color: #1A1D23 !important;
+    }
+    
+    /* Fix selectbox text */
+    [data-baseweb="select"] {
+        color: #E7E9EA !important;
+    }
+    
+    [data-baseweb="select"] input {
+        color: #E7E9EA !important;
+    }
+    
+    /* Fix all input text colors */
+    input, textarea, select {
+        color: #E7E9EA !important;
     }
 
     [data-testid="stHorizontalBlock"] {
@@ -719,11 +760,11 @@ if tab_choice == "Executive Overview":
         connector = {"fillcolor": "#E0E0E0"}
     ))
     fig.update_layout(
-        margin=dict(t=10, b=20, l=140, r=15),
+        margin=dict(t=8, b=18, l=135, r=10),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#E7E9EA", size=7),
-        height=230,
+        font=dict(color="#E7E9EA", size=6),
+        height=210,
         showlegend=False,
         yaxis=dict(
             showticklabels=False,
@@ -742,17 +783,17 @@ if tab_choice == "Executive Overview":
     # Add manual left-aligned annotations for stage names
     for i, row in funnel_data.iterrows():
         fig.add_annotation(
-            x=-0.28,
+            x=-0.3,
             y=row['Stage'],
             text=f"<b>{row['Stage']}</b>",
             showarrow=False,
             xref="paper",
             yref="y",
             xanchor="left",
-            font=dict(color="#E7E9EA", size=9),
+            font=dict(color="#E7E9EA", size=8.5),
         )
     fig.update_traces(
-        textfont=dict(size=9),
+        textfont=dict(size=8),
         textinfo="value+percent initial",
         texttemplate="%{value}<br>%{percentInitial:.0%}",
         hovertemplate=(
@@ -864,14 +905,14 @@ else:
             xaxis_title="Pipeline Opportunity (₹ Cr)",
             yaxis_title="Closed Revenue (₹ Cr)",
             showlegend=False,
-            height=360,
+            height=320,
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="#1D1D1F"),
-            margin=dict(t=20, b=40, l=40, r=20)
+            font=dict(color="#E7E9EA"),
+            margin=dict(t=15, b=35, l=35, r=15)
         )
         st.markdown('<div class="chart-header">Conversion Efficiency</div>', unsafe_allow_html=True)
-        st.plotly_chart(fig_scatter, use_container_width=True, config={'responsive': True, 'displayModeBar': False})
+        st.plotly_chart(fig_scatter, use_container_width=True, config={'displayModeBar': True, 'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'select2d'], 'displaylogo': False})
         
     with row1_col2:
         # Group for Treemap - Filter out nulls
@@ -889,14 +930,14 @@ else:
                 color_continuous_scale='Greens'
             )
             fig_tree.update_layout(
-                height=360,
-                margin=dict(t=20, l=10, r=10, b=10),
+                height=320,
+                margin=dict(t=15, l=5, r=5, b=5),
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
                 font=dict(color="#E7E9EA")
             )
             st.markdown('<div class="chart-header">Revenue Landscape</div>', unsafe_allow_html=True)
-            st.plotly_chart(fig_tree, use_container_width=True, config={'responsive': True, 'displayModeBar': False})
+            st.plotly_chart(fig_tree, use_container_width=True, config={'displayModeBar': True, 'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'select2d'], 'displaylogo': False})
         else:
             st.info("No closed deals to display in Treemap.")
 
@@ -912,14 +953,14 @@ else:
             xaxis_title="C3 Value (₹ Cr)", 
             yaxis_title=None, 
             showlegend=False, 
-            height=340, 
+            height=300, 
             paper_bgcolor="rgba(0,0,0,0)", 
             plot_bgcolor="rgba(0,0,0,0)", 
-            font=dict(color="#1D1D1F"),
-            margin=dict(t=20, b=40, l=20, r=20)
+            font=dict(color="#E7E9EA"),
+            margin=dict(t=15, b=35, l=15, r=15)
         )
         st.markdown('<div class="chart-header">AVP Leaderboard</div>', unsafe_allow_html=True)
-        st.plotly_chart(fig_avp, use_container_width=True, config={'responsive': True, 'displayModeBar': False})
+        st.plotly_chart(fig_avp, use_container_width=True, config={'displayModeBar': True, 'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'select2d'], 'displaylogo': False})
 
     with row2_col2:
         monthly_trend = agg_df.copy()
@@ -933,14 +974,14 @@ else:
             yaxis_title="Value (₹ Cr)", 
             hovermode="x unified", 
             legend=dict(orientation="h", y=1.2, x=0), 
-            height=340, 
+            height=300, 
             paper_bgcolor="rgba(0,0,0,0)", 
             plot_bgcolor="rgba(0,0,0,0)", 
-            font=dict(color="#1D1D1F"),
-            margin=dict(t=20, b=40, l=40, r=20)
+            font=dict(color="#E7E9EA"),
+            margin=dict(t=15, b=35, l=35, r=15)
         )
         st.markdown('<div class="chart-header">Monthly Revenue Trend</div>', unsafe_allow_html=True)
-        st.plotly_chart(fig_trend, use_container_width=True, config={'responsive': True, 'displayModeBar': False})
+        st.plotly_chart(fig_trend, use_container_width=True, config={'displayModeBar': True, 'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'select2d'], 'displaylogo': False})
 
     # 4. Advanced AI Insights
     st.markdown("### 🤖 Advanced AI Insights")
