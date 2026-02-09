@@ -188,12 +188,14 @@ st.markdown("""
     div[data-testid="stPlotlyChart"] {
         border: 1px solid #2F3336;
         border-radius: 12px;
-        padding: 0 !important;
+        padding: 0.5rem !important;
         background-color: #0E1117;
         margin-top: 5px !important;
         margin-bottom: 1.5rem;
         width: 100% !important;
-        height: 300px !important;
+        height: 285px !important;
+        overflow: hidden;
+        box-sizing: border-box;
     }
     
     /* Chart Headers Refinement */
@@ -311,24 +313,87 @@ st.markdown("""
         }
     }
 
-    /* Responsive Adjustments & Zoom Safety */
-    @media (max-width: 1400px) {
-        .dashboard-title { font-size: 1.4rem !important; }
-        .header-container { padding: 0.25rem 0 !important; }
+    /* Comprehensive Responsive Design for All Laptop Sizes */
+    
+    /* MacBook Pro 16" & Large Laptops (1728px+) - Optimal */
+    @media (min-width: 1728px) {
+        .pipeline-table { font-size: 0.85rem; }
+        .chart-header { font-size: 1.1rem; }
     }
-
-    @media (max-width: 1200px) {
+    
+    /* MacBook Pro 14" & Standard Laptops (1512px - 1727px) */
+    @media (max-width: 1727px) and (min-width: 1512px) {
+        .dashboard-title { font-size: 1.5rem !important; }
+        .pipeline-table { font-size: 0.8rem; }
+        .chart-header { font-size: 1.05rem; }
+        div[data-testid="stPlotlyChart"] { height: 280px !important; }
+        .scroll-area { height: 285px !important; max-height: 285px !important; }
+    }
+    
+    /* MacBook Pro 13" & Medium Laptops (1440px - 1511px) */
+    @media (max-width: 1511px) and (min-width: 1440px) {
+        .dashboard-title { font-size: 1.4rem !important; }
+        .pipeline-table { font-size: 0.75rem; }
+        .pipeline-table th, .pipeline-table td { padding: 0.6rem 0.8rem; }
+        .chart-header { font-size: 1rem; }
+        div[data-testid="stPlotlyChart"] { height: 260px !important; }
+        .scroll-area { height: 265px !important; max-height: 265px !important; }
+        .header-container { padding: 0.4rem 0 0.6rem 0 !important; }
+    }
+    
+    /* MacBook Air & Smaller Laptops (1366px - 1439px) */
+    @media (max-width: 1439px) and (min-width: 1366px) {
+        .dashboard-title { font-size: 1.3rem !important; }
+        .pipeline-table { font-size: 0.7rem; }
+        .pipeline-table th, .pipeline-table td { padding: 0.5rem 0.7rem; }
+        .chart-header { font-size: 0.95rem; }
+        div[data-testid="stPlotlyChart"] { height: 240px !important; }
+        .scroll-area { height: 245px !important; max-height: 245px !important; }
+        .insights-scroll-area { max-height: 220px; }
+        .header-container { padding: 0.3rem 0 0.5rem 0 !important; }
+        [data-testid="stHorizontalBlock"] { gap: 0.4rem !important; }
+    }
+    
+    /* Small Laptops & Tablets (1200px - 1365px) */
+    @media (max-width: 1365px) and (min-width: 1200px) {
+        .dashboard-title { font-size: 1.2rem !important; }
+        .pipeline-table { font-size: 0.65rem; }
+        .pipeline-table th, .pipeline-table td { padding: 0.4rem 0.6rem; }
+        .chart-header { font-size: 0.9rem; }
+        div[data-testid="stPlotlyChart"] { height: 220px !important; }
+        .scroll-area { height: 225px !important; max-height: 225px !important; }
+        .insights-scroll-area { max-height: 200px; }
         [data-testid="stHorizontalBlock"] {
             flex-wrap: wrap !important;
-            gap: 1rem !important;
+            gap: 0.5rem !important;
         }
-        .dashboard-title { font-size: 1.25rem !important; }
+        .header-container { padding: 0.25rem 0 0.4rem 0 !important; }
     }
-
-    @media (max-width: 768px) {
+    
+    /* Tablets & Small Screens (768px - 1199px) */
+    @media (max-width: 1199px) and (min-width: 768px) {
         .dashboard-title { font-size: 1.1rem !important; }
-        .stMarkdown h3 { font-size: 1.1rem !important; }
-        .pipeline-table { font-size: 0.75rem !important; }
+        .pipeline-table { font-size: 0.6rem; }
+        .pipeline-table th, .pipeline-table td { padding: 0.35rem 0.5rem; }
+        .chart-header, .stMarkdown h3 { font-size: 0.85rem !important; }
+        div[data-testid="stPlotlyChart"] { height: 200px !important; }
+        .scroll-area { height: 205px !important; max-height: 205px !important; }
+        .insights-scroll-area { max-height: 180px; }
+        [data-testid="stHorizontalBlock"] {
+            flex-wrap: wrap !important;
+            gap: 0.5rem !important;
+        }
+    }
+    
+    /* Mobile Devices (< 768px) */
+    @media (max-width: 767px) {
+        .dashboard-title { font-size: 1rem !important; }
+        .pipeline-table { font-size: 0.55rem; }
+        .pipeline-table th, .pipeline-table td { padding: 0.3rem 0.4rem; }
+        .chart-header, .stMarkdown h3 { font-size: 0.8rem !important; }
+        div[data-testid="stPlotlyChart"] { height: 180px !important; }
+        .scroll-area { height: 185px !important; max-height: 185px !important; }
+        .insights-scroll-area { max-height: 160px; }
     }
 
     /* Table Responsiveness Enhancements */
@@ -654,11 +719,11 @@ if tab_choice == "Executive Overview":
         connector = {"fillcolor": "#E0E0E0"}
     ))
     fig.update_layout(
-        margin=dict(t=30, b=10, l=120, r=10),
+        margin=dict(t=10, b=20, l=140, r=15),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#E7E9EA", size=10),
-        height=305,
+        font=dict(color="#E7E9EA", size=7),
+        height=230,
         showlegend=False,
         yaxis=dict(
             showticklabels=False,
@@ -677,17 +742,17 @@ if tab_choice == "Executive Overview":
     # Add manual left-aligned annotations for stage names
     for i, row in funnel_data.iterrows():
         fig.add_annotation(
-            x=-0.35,
+            x=-0.28,
             y=row['Stage'],
             text=f"<b>{row['Stage']}</b>",
             showarrow=False,
             xref="paper",
             yref="y",
             xanchor="left",
-            font=dict(color="#E7E9EA", size=11.5),
+            font=dict(color="#E7E9EA", size=9),
         )
     fig.update_traces(
-        textfont=dict(size=11.5), # Increased font size within bars
+        textfont=dict(size=9),
         textinfo="value+percent initial",
         texttemplate="%{value}<br>%{percentInitial:.0%}",
         hovertemplate=(
