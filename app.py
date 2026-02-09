@@ -2,94 +2,319 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from datetime import datetime, timedelta
 from utils import load_google_sheet_data, load_revenue_summary_data
+import os
+import base64
+
+# Handle Favicon / Logo
+fav_icon = "📊"
+for ext in ["png", "jpg", "jpeg"]:
+    if os.path.exists(f"logo.{ext}"):
+        fav_icon = f"logo.{ext}"
+        break
 
 # Page Config
 st.set_page_config(
-    page_title="Financial Dashboard",
-    page_icon="📈",
+    page_title="Schbang C0-C3",
+    page_icon=fav_icon,
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS
+# Custom CSS - X (Twitter) Inspired Professional Design
 st.markdown("""
 <style>
-    .stBlock, .stPlotlyChart {
-        border-radius: 10px;
-        overflow: hidden;
-    }
-    div[data-testid="stMetric"] {
-        background-color: #262730;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    /* Global Typography - Professional & Clean */
+    html, body, [class*="css"] {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        font-size: 14px;
     }
     
-    /* Custom Table Styling (Dark Theme for both tables) */
+    /* Reduce top padding */
+    .block-container {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+    
+    /* Main title styling */
+    h1 {
+        font-size: 1.75rem !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.02em;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    /* Section headers */
+    h2, h3 {
+        font-size: 1.25rem !important;
+        font-weight: 600 !important;
+        margin-top: 1rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    h5 {
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Metrics styling */
+    div[data-testid="stMetric"] {
+        background-color: #16181C;
+        padding: 1rem;
+        border-radius: 12px;
+        border: 1px solid #2F3336;
+    }
+    
+    div[data-testid="stMetric"] label {
+        font-size: 0.875rem !important;
+        color: #71767B !important;
+    }
+    
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+        font-size: 1.5rem !important;
+    }
+    
+    /* Custom Table Styling - X Inspired */
     .pipeline-table {
         width: 100%;
-        border-collapse: collapse;
-        font-family: "Source Sans Pro", sans-serif;
-        color: #FAFAFA;
-        margin-top: 20px;
-        margin-bottom: 30px;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: #E7E9EA;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
     }
+    
     .pipeline-table th {
-        background-color: #0d47a1; /* Blue header */
-        color: white;
-        padding: 12px;
-        text-align: right; 
-        font-weight: bold;
-        border-bottom: 2px solid #1e88e5;
-    }
-    .pipeline-table th:first-child {
-        text-align: left; 
-    }
-    .pipeline-table td {
-        padding: 12px;
+        background-color: #16181C;
+        color: #71767B;
+        padding: 0.75rem 1rem;
         text-align: right;
-        border-bottom: 1px solid #333;
-        background-color: #1e1e1e; /* Dark row background */
+        font-weight: 600;
+        border-bottom: 1px solid #2F3336;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
     }
+    
+    .pipeline-table th:first-child {
+        text-align: left;
+        position: sticky;
+        left: 0;
+        z-index: 3;
+        background-color: #16181C;
+    }
+    
+    .pipeline-table td {
+        padding: 0.75rem 1rem;
+        text-align: right;
+        border-bottom: 1px solid #2F3336;
+        background-color: #0E1117;
+    }
+    
     .pipeline-table td:first-child {
         text-align: left;
         font-weight: 500;
-        background-color: #262730; /* Slightly lighter for first column */
+        background-color: #16181C;
+        color: #E7E9EA;
+        position: sticky;
+        left: 0;
+        z-index: 1;
     }
+    
     .pipeline-table tr:hover td {
-        background-color: #333;
+        background-color: #1A1D23;
     }
+    
     .pipeline-table .total-row td {
-        background-color: #2d2d3a;
-        font-weight: bold;
-        border-top: 2px solid #555;
-        color: #ffffff;
+        background-color: #16181C;
+        font-weight: 700;
+        border-top: 1px solid #2F3336;
+        border-bottom: none;
+        color: #FFFFFF;
+        text-align: center !important;
     }
+    
     .deficit-negative {
-        color: #FF5252; /* Bright red for visibility on dark background */
-        font-weight: bold;
+        color: #F4212E;
+        font-weight: 600;
     }
 
-    /* Scrollable Canvas for Summary Table */
-    .summary-scroll-container {
-        max-height: 350px; 
+    /* Chart Container with Light Border */
+    /* Target Streamlit Plotly containers directly */
+    div[data-testid="stPlotlyChart"] {
+        border: 1px solid #2F3336;
+        border-radius: 12px;
+        padding: 0.5rem; /* Tighter padding */
+        background-color: #0E1117;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Ensure markdown headers in columns don't add extra space */
+    .stMarkdown h3 {
+        margin-top: 0 !important;
+        margin-bottom: -0.5rem !important;
+    }
+    
+    .trend-up { color: #00BA7C !important; font-size: 0.8rem; margin-left: 8px; font-weight: 700; width: 45px; display: inline-block; text-align: left; }
+    .trend-down { color: #F4212E !important; font-size: 0.8rem; margin-left: 8px; font-weight: 700; width: 45px; display: inline-block; text-align: left; }
+    .trend-neutral { color: #71767B !important; font-size: 0.8rem; margin-left: 8px; font-weight: 700; width: 45px; display: inline-block; text-align: left; }
+    .trend-pct { font-size: 0.65rem; opacity: 0.7; margin-left: 2px; font-weight: 400; }
+    
+    /* Scrollable Layout for Tables */
+    .table-wrapper {
+        border: 1px solid #2F3336;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-top: 0 !important;
+        margin-bottom: 1.5rem;
+        padding: 0 !important;
+    }
+    
+    .scroll-area {
+        max-height: 245px; /* Roughly 5 rows */
         overflow-y: auto;
-        border: 1px solid #333;
-        border-radius: 4px;
-        margin-bottom: 30px;
     }
-    .summary-scroll-container th {
-        position: sticky;
-        top: 0;
-        z-index: 2;
-        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+
+    .scroll-area::-webkit-scrollbar {
+        width: 6px;
     }
-    .summary-scroll-container .total-row td {
-        position: sticky;
-        bottom: 0;
-        z-index: 2;
-        box-shadow: 0 -2px 2px -1px rgba(0, 0, 0, 0.4);
+    
+    .scroll-area::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .scroll-area::-webkit-scrollbar-thumb {
+        background: #2F3336;
+        border-radius: 10px;
+    }
+    
+    .scroll-area::-webkit-scrollbar-thumb:hover {
+        background: #3F4346;
+    }
+    
+    /* Tabs styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 2rem;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        padding: 0.5rem 0;
+    }
+    
+    /* Unified Single-Row Header Styling */
+    [data-testid="stMultiSelect"] label {
+        display: none !important;
+    }
+
+    [data-testid="stHorizontalBlock"] {
+        align-items: center !important;
+        gap: 0.5rem !important;
+    }
+
+    .dashboard-title {
+        font-size: 1.6rem !important;
+        font-weight: 800 !important;
+        margin: 0 !important;
+        padding-right: 0.5rem !important;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+        
+        /* Shimmer Animation */
+        background: linear-gradient(
+            to right,
+            #FFFFFF 20%,
+            #71767B 40%,
+            #71767B 60%,
+            #FFFFFF 80%
+        );
+        background-size: 200% auto;
+        color: #000;
+        background-clip: text;
+        text-fill-color: transparent;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shine 5s linear infinite;
+    }
+
+    @keyframes shine {
+        to {
+            background-position: 200% center;
+        }
+    }
+
+    /* Styled Radio as Tabs */
+    div[data-testid="stRadio"] > label {
+        display: none !important;
+    }
+
+    div[data-testid="stRadio"] div[role="radiogroup"] {
+        flex-direction: row !important;
+        gap: 1.25rem !important;
+    }
+
+    div[data-testid="stRadio"] div[role="radiogroup"] label {
+        background-color: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        cursor: pointer !important;
+    }
+
+    /* Hide the radio circle */
+    div[data-testid="stRadio"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: #71767B !important;
+        transition: color 0.2s ease;
+        margin: 0 !important;
+    }
+
+    div[data-testid="stRadio"] div[role="radiogroup"] label:hover div[data-testid="stMarkdownContainer"] p {
+        color: #E7E9EA !important;
+    }
+
+    /* Selection Indicator (Green Underline) */
+    div[data-testid="stRadio"] div[role="radiogroup"] label[data-baseweb="radio"]:has(input:checked) div[data-testid="stMarkdownContainer"] p {
+        color: #00BA7C !important;
+        border-bottom: 2px solid #00BA7C;
+        padding-bottom: 2px;
+    }
+
+    /* Hide radio input circle specifically */
+    div[data-testid="stRadio"] div[role="radiogroup"] [data-testid="stWidgetLabel"] {
+        display: none !important;
+    }
+
+    /* Target the radio button element itself to hide the circle */
+    div[data-testid="stRadio"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] ~ div {
+        display: none !important;
+    }
+    
+    /* Alternative more robust circle hiding */
+    div[data-testid="stRadio"] div[role="radiogroup"] label [class*="st-"] {
+        /* We want to hide the SVG or the circle but NOT the text container */
+    }
+    
+    /* Surgical hide of the radio circle/dot */
+    div[data-testid="stRadio"] div[role="radiogroup"] label div:first-child:not([data-testid="stMarkdownContainer"]) {
+        display: none !important;
+    }
+
+    .header-container {
+        padding: 0.5rem 0 0.75rem 0 !important; /* Reduced top padding */
+        border-bottom: 1px solid #2F3336;
+        margin-bottom: 1.5rem !important;
+    }
+
+    /* Target the main container */
+    .block-container {
+        padding-top: 1.5rem !important; /* Reduced from 3.5rem */
     }
 </style>
 """, unsafe_allow_html=True)
@@ -111,33 +336,68 @@ cols_to_sum = ['C0', 'C1', 'C2', 'C3']
 for col in cols_to_sum:
     df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
 
+# Prepare shared aggregation data
+def prepare_shared_data(filtered_df):
+    # Aggregation
+    agg_df = filtered_df.groupby(['Month_Sort', 'Month_Year'])[cols_to_sum].sum().reset_index()
+    agg_df = agg_df.sort_values('Month_Sort')
+    display_df = agg_df.drop(columns=['Month_Sort'])
 
-# --- Filters (Placed at Top) ---
-st.title("Financial Dashboard")
-# st.markdown("### Filters")
+    # Totals
+    total_row = display_df[cols_to_sum].sum()
+    total_data = {'Month_Year': 'TOTAL'}
+    for col in cols_to_sum:
+        total_data[col] = total_row[col]
+    return agg_df, display_df, total_data
 
-with st.container():
-    col1, col2, col3, col4 = st.columns(4)
 
-    # 1. Month Filter
-    with col1:
-        month_options = df.sort_values('Month222')['Month_Year'].dropna().unique().tolist()
-        selected_months = st.multiselect("Month", options=month_options)
+# --- Consolidated Header Row ---
+st.markdown('<div class="header-container">', unsafe_allow_html=True)
+# Adjusted Ratios: Brand(1.5), Tabs(1.8), Filters(1, 1, 1, 1)
+col_brand, col_tabs, col1, col2, col3, col4 = st.columns([1.5, 1.8, 1, 1, 1, 1])
 
-    # 2. AVP Filter
-    with col2:
-        avp_options = sorted(df['AVP'].dropna().unique().tolist())
-        selected_avp = st.multiselect("AVP", options=avp_options)
+with col_brand:
+    # Look for common logo filenames
+    logo_file = None
+    for ext in ["png", "jpg", "jpeg"]:
+        if os.path.exists(f"logo.{ext}"):
+            logo_file = f"logo.{ext}"
+            break
+            
+    if logo_file:
+        with open(logo_file, "rb") as f:
+            logo_data = base64.b64encode(f.read()).decode()
+        ext = logo_file.split(".")[-1].lower()
+        mime_type = f"image/{'png' if ext == 'png' else 'jpeg'}"
+        st.markdown(f"""
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: -2px;">
+                <img src="data:{mime_type};base64,{logo_data}" style="height: 32px; width: auto; object-fit: contain;">
+                <div class="dashboard-title">Schbang C0-C3</div>
+            </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f'<div class="dashboard-title">Schbang C0-C3</div>', unsafe_allow_html=True)
 
-    # 3. Brand Name Filter
-    with col3:
-        brand_options = sorted(df['Brand Name'].dropna().unique().tolist())
-        selected_brand = st.multiselect("Brand Name", options=brand_options)
+with col_tabs:
+    # Custom Radio Tabs (Using horizontal radio for toggle feel)
+    tab_choice = st.radio("Nav", ["Executive Overview", "Deep Dive & Insights"], horizontal=True, label_visibility="collapsed")
 
-    # 4. Type Filter
-    with col4:
-        type_options = sorted(df['Type'].dropna().unique().tolist())
-        selected_type = st.multiselect("Type", options=type_options)
+with col1:
+    month_options = df.sort_values('Month222')['Month_Year'].dropna().unique().tolist()
+    selected_months = st.multiselect("Month", options=month_options, placeholder="Month", label_visibility="collapsed")
+
+with col2:
+    avp_options = sorted(df['AVP'].dropna().unique().tolist())
+    selected_avp = st.multiselect("AVP", options=avp_options, placeholder="AVP", label_visibility="collapsed")
+
+with col3:
+    brand_options = sorted(df['Brand Name'].dropna().unique().tolist())
+    selected_brand = st.multiselect("Brand Name", options=brand_options, placeholder="Brand Name", label_visibility="collapsed")
+
+with col4:
+    type_options = sorted(df['Type'].dropna().unique().tolist())
+    selected_type = st.multiselect("Type", options=type_options, placeholder="Type", label_visibility="collapsed")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # --- Filter Logic ---
 filtered_df = df.copy()
@@ -154,18 +414,16 @@ if selected_brand:
 if selected_type:
     filtered_df = filtered_df[filtered_df['Type'].isin(selected_type)]
 
-
-
-# --- Tabs ---
-tab1, tab2 = st.tabs(["Executive Overview", "Deep Dive & Insights"])
+# Execute shared data preparation
+agg_df, display_df, total_data = prepare_shared_data(filtered_df)
 
 # ==========================================
-# TAB 1: EXECUTIVE OVERVIEW
+# MAIN CONTENT
 # ==========================================
-with tab1:
+if tab_choice == "Executive Overview":
     # --- FY'25 - 26 Summary Table (Placed after Filters) ---
     if not rev_df.empty:
-        st.markdown("### FY'25 - 26 Summary")
+        st.markdown("### FY'25 - 26 Insights")
         
         # Process Revenue Data
         def clean_currency(val):
@@ -209,13 +467,24 @@ with tab1:
         def fmt_curr(val):
             return f"₹{val:.2f} Cr"
 
-        # HTML Construction (Using dark theme class pipeline-table)
-        rev_html = '<div class="summary-scroll-container">'
-        rev_html += '<table class="pipeline-table">'
-        rev_html += '<thead><tr>'
-        rev_html += '<th>SBUs</th><th>Annual Target</th><th>H1 Target</th><th>H1 Achieved</th><th>H1 Deficit</th><th>H2 Target</th><th>H1 Deficit + H2 Target</th><th>Balance H2 Target</th>'
-        rev_html += '</tr></thead><tbody>'
+        # HTML Construction - Professional Single Table with Sticky Header/Footer
+        rev_html = '<div class="table-wrapper">'
+        rev_html += '<div class="scroll-area">'
+        rev_html += '<table class="pipeline-table" style="margin:0;">'
         
+        # Header (Sticky in scroll-area via CSS or standard structure)
+        rev_html += '<thead style="position: sticky; top: 0; z-index: 10;"><tr>'
+        rev_html += '<th>SBUs</th>'
+        rev_html += '<th>Annual Target</th>'
+        rev_html += '<th>H1 Target</th>'
+        rev_html += '<th>H1 Achieved</th>'
+        rev_html += '<th>H1 Deficit</th>'
+        rev_html += '<th>H2 Target</th>'
+        rev_html += '<th>H1 Deficit + H2 Target</th>'
+        rev_html += '<th>Balance H2 Target</th>'
+        rev_html += '</tr></thead>'
+        
+        rev_html += '<tbody>'
         for _, row in summary_df.iterrows():
             sbu = row.get('SBUs', '')
             if pd.isna(sbu) or str(sbu).strip() == '':
@@ -227,48 +496,53 @@ with tab1:
             rev_html += f"<td>{fmt_curr(row.get('H1 Achieved', 0))}</td>"
             
             deficit = row.get('H1 Deficit', 0)
-            
             rev_html += f"<td class='deficit-negative'>▼ {fmt_curr(abs(deficit))}</td>" 
             
             rev_html += f"<td>{fmt_curr(row.get('H2 Target', 0))}</td>"
             rev_html += f"<td>{fmt_curr(row.get('H1 Deficit + H2 Target', 0))}</td>"
             rev_html += f"<td>{fmt_curr(row.get('Balance H2 Target', 0))}</td>"
             rev_html += "</tr>"
-            
-        # Total Row
-        rev_html += "<tr class='total-row'><td>TOTAL</td>"
-        rev_html += f"<td>{fmt_curr(total_rev_dict['Annual Target'])}</td>"
-        rev_html += f"<td>{fmt_curr(total_rev_dict['H1 Target'])}</td>"
-        rev_html += f"<td>{fmt_curr(total_rev_dict['H1 Achieved'])}</td>"
-        rev_html += f"<td class='deficit-negative'>▼ {fmt_curr(abs(total_rev_dict['H1 Deficit']))}</td>"
-        rev_html += f"<td>{fmt_curr(total_rev_dict['H2 Target'])}</td>"
-        rev_html += f"<td>{fmt_curr(total_rev_dict['H1 Deficit + H2 Target'])}</td>"
-        rev_html += f"<td>{fmt_curr(total_rev_dict['Balance H2 Target'])}</td>"
-        rev_html += "</tr>"
+        rev_html += "</tbody>"
         
-        rev_html += "</tbody></table></div>"
+        # Footer
+        rev_html += '<tfoot style="position: sticky; bottom: 0; z-index: 10;">'
+        rev_html += "<tr class='total-row'>"
+        rev_html += '<td>TOTAL</td>'
+        rev_html += f'<td>{fmt_curr(total_rev_dict["Annual Target"])}</td>'
+        rev_html += f'<td>{fmt_curr(total_rev_dict["H1 Target"])}</td>'
+        rev_html += f'<td>{fmt_curr(total_rev_dict["H1 Achieved"])}</td>'
+        rev_html += f'<td class="deficit-negative">▼ {fmt_curr(abs(total_rev_dict["H1 Deficit"]))}</td>'
+        rev_html += f'<td>{fmt_curr(total_rev_dict["H2 Target"])}</td>'
+        rev_html += f'<td>{fmt_curr(total_rev_dict["H1 Deficit + H2 Target"])}</td>'
+        rev_html += f'<td>{fmt_curr(total_rev_dict["Balance H2 Target"])}</td>'
+        rev_html += "</tr></tfoot>"
+        
+        rev_html += "</table></div></div>"
         st.markdown(rev_html, unsafe_allow_html=True)
+        # Add significant vertical spacing after the first section
+        st.markdown('<div style="margin-bottom: 1rem;"></div>', unsafe_allow_html=True)
 
 
     # --- Pipeline Section ---
-    st.markdown("### C0-C3 Pipeline")
+    # Using pre-computed agg_df, display_df, and total_data
 
-    # Aggregation
-    agg_df = filtered_df.groupby(['Month_Sort', 'Month_Year'])[cols_to_sum].sum().reset_index()
-    agg_df = agg_df.sort_values('Month_Sort')
-    display_df = agg_df.drop(columns=['Month_Sort'])
-
-    # Totals
-    total_row = display_df[cols_to_sum].sum()
-    total_data = {'Month_Year': 'TOTAL'}
-    for col in cols_to_sum:
-        total_data[col] = total_row[col]
-
-    # Funnel Data
-    c0_count = (filtered_df['C0'] != 0).sum()
-    c1_count = (filtered_df['C1'] != 0).sum()
-    c2_count = (filtered_df['C2'] != 0).sum()
-    c3_count = (filtered_df['C3'] != 0).sum()
+    # Funnel Data - Redefined Status-based Logic
+    # C0-Ideation: Column J (C0 (Ideation/ Brainstorming Stage)) not blank
+    c0_count = filtered_df['C0 (Ideation/ Brainstorming Stage)'].notna().sum()
+    
+    # C1-Pitch: Column L (C1 (Pitch Stage)) in ('C2', 'Pitch Completed', 'Proposal Sent', 'Round 2 Needed')
+    pitch_statuses = ['C2', 'Pitch Completed', 'Proposal Sent', 'Round 2 Needed']
+    c1_count = filtered_df['C1 (Pitch Stage)'].isin(pitch_statuses).sum()
+    
+    # C2-Negotiation: Column O (C2 (Negotiation Stage)) not 'Lost' and not blank
+    c2_count = filtered_df[
+        filtered_df['C2 (Negotiation Stage)'].notna() & 
+        (filtered_df['C2 (Negotiation Stage)'].str.strip() != 'Lost') &
+        (filtered_df['C2 (Negotiation Stage)'].str.strip() != '')
+    ].shape[0]
+    
+    # C3-Closed: Column Q (C3 (Deal Closed Stage)) == 'Won'
+    c3_count = (filtered_df['C3 (Deal Closed Stage)'].str.strip() == 'Won').sum()
 
     funnel_data = pd.DataFrame({
         'Stage': ['C0 - Ideation', 'C1 - Pitch', 'C2 - Negotiation', 'C3 - Closed'],
@@ -285,40 +559,103 @@ with tab1:
         connector = {"fillcolor": "#E0E0E0"}
     ))
     fig.update_layout(
-        margin=dict(t=30, b=20, l=10, r=10),
+        margin=dict(t=30, b=10, l=120, r=10), # Large left margin for annotations
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="white", size=14),
-        height=350,
+        font=dict(color="#E7E9EA", size=10),
+        height=265,
         showlegend=False,
-        title=dict(text="C3 Funnel", x=0.5, font=dict(size=18))
+        yaxis=dict(
+            showticklabels=False, # Hide default right-aligned labels
+            automargin=False
+        ),
+        hoverlabel=dict(
+            bgcolor="#16181C",
+            bordercolor="#2F3336",
+            font_size=11,
+            font_family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
+            font_color="white",
+            align="left"
+        )
+    )
+    
+    # Add manual left-aligned annotations for stage names
+    for i, row in funnel_data.iterrows():
+        fig.add_annotation(
+            x=-0.35, # Adjusted for visibility within the 120px margin
+            y=row['Stage'],
+            text=f"<b>{row['Stage']}</b>",
+            showarrow=False,
+            xref="paper",
+            yref="y",
+            xanchor="left",
+            font=dict(color="#E7E9EA", size=11.5), # Increased from 10
+        )
+    fig.update_traces(
+        textfont=dict(size=11.5), # Increased font size within bars
+        textinfo="value+percent initial",
+        texttemplate="%{value}<br>%{percentInitial:.0%}",
+        hovertemplate=(
+            "<b>%{y}</b><br><br>"
+            "Initial: <b>%{percentInitial:.0%}</b><br>"
+            "Previous: <b>%{percentPrevious:.0%}</b>"
+            "<extra></extra>"
+        )
     )
 
     def fmt_cr(val):
         return f"₹{val/10000000:.1f} Cr"
 
-    # Construct HTML Table
-    html = '<table class="pipeline-table">'
+    # Construct HTML Table with Trends
+    html = '<div class="table-wrapper">'
+    html += '<table class="pipeline-table" style="margin:0;">'
     html += '<thead><tr><th>Month</th><th>C0 - Ideation</th><th>C1 - Pitch</th><th>C2 - Negotiation</th><th>C3 - Closed</th></tr></thead>'
     html += '<tbody>'
-    for index, row in display_df.iterrows():
-        html += f"<tr><td>{row['Month_Year']}</td><td style='text-align:right'>{fmt_cr(row['C0'])}</td><td style='text-align:right'>{fmt_cr(row['C1'])}</td><td style='text-align:right'>{fmt_cr(row['C2'])}</td><td style='text-align:right'>{fmt_cr(row['C3'])}</td></tr>"
-    html += f"<tr class='total-row'><td>TOTAL</td><td style='text-align:right'>{fmt_cr(total_data['C0'])}</td><td style='text-align:right'>{fmt_cr(total_data['C1'])}</td><td style='text-align:right'>{fmt_cr(total_data['C2'])}</td><td style='text-align:right'>{fmt_cr(total_data['C3'])}</td></tr>"
-    html += '</tbody></table>'
+    
+    for i in range(len(display_df)):
+        row = display_df.iloc[i]
+        prev_row = display_df.iloc[i-1] if i > 0 else None
+        
+        row_html = f"<tr><td>{row['Month_Year']}</td>"
+        for col in cols_to_sum:
+            val = row[col]
+            trend_html = '<span class="trend-neutral">-<span class="trend-pct">0%</span></span>' # Baseline for first row
+            
+            if prev_row is not None:
+                p_val = prev_row[col]
+                if p_val > 0:
+                    diff = ((val - p_val) / p_val) * 100
+                    if diff > 0.5:
+                        trend_html = f'<span class="trend-up">▲<span class="trend-pct">{diff:.0f}%</span></span>'
+                    elif diff < -0.5:
+                        trend_html = f'<span class="trend-down">▼<span class="trend-pct">{abs(diff):.0f}%</span></span>'
+                    else:
+                        trend_html = f'<span class="trend-neutral">-<span class="trend-pct">0%</span></span>'
+            
+            row_html += f"<td>{fmt_cr(val)}{trend_html}</td>"
+        row_html += "</tr>"
+        html += row_html
+        
+    html += f"<tr class='total-row'><td>TOTAL</td><td>{fmt_cr(total_data['C0'])}</td><td>{fmt_cr(total_data['C1'])}</td><td>{fmt_cr(total_data['C2'])}</td><td>{fmt_cr(total_data['C3'])}</td></tr>"
+    html += '</tbody></table></div>'
 
-    # Layout
-    col_table, col_funnel = st.columns([1.5, 1])
+    # Layout - Balanced Alignment with Fine-Tuned Spacer Column
+    col_table, col_spacer, col_funnel = st.columns([1.5, 0.05, 1])
+    
     with col_table:
+        # Pull C0-C3 Pipeline header up to align with previous section
+        st.markdown('<div style="margin-top: -1.2rem;"><h3>C0-C3 Pipeline</h3></div>', unsafe_allow_html=True)
         st.markdown(html, unsafe_allow_html=True)
     with col_funnel:
-        st.markdown("##### C3 Funnel")
-        st.plotly_chart(fig, use_container_width=True)
+        # Funnel Analysis header starts naturally lower, so we align it without the heavy negative margin
+        st.markdown('<div><h3>Funnel Analysis</h3></div>', unsafe_allow_html=True)
+        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
 
-# ==========================================
-# TAB 2: DEEP DIVE & INSIGHTS
-# ==========================================
-with tab2:
+else:
+    # ==========================================
+    # TAB 2: DEEP DIVE & INSIGHTS
+    # ==========================================
     st.markdown("## Deep Dive Analysis")
     
     # 1. KPIs
@@ -339,11 +676,9 @@ with tab2:
     st.markdown("---")
     
     # 2. Advanced Charts (Row 1)
-    st.markdown("### 📊 Strategic View")
     row1_col1, row1_col2 = st.columns(2)
     
     with row1_col1:
-        st.markdown("##### Efficiency Matrix (Pipeline vs Closed)")
         # Group by AVP
         avp_metrics = filtered_df.groupby('AVP')[['C0', 'C1', 'C2', 'C3']].sum().reset_index()
         avp_metrics['Total Pipeline'] = (avp_metrics['C0'] + avp_metrics['C1'] + avp_metrics['C2']) / 10000000
@@ -362,18 +697,19 @@ with tab2:
         )
         fig_scatter.update_traces(textposition='top center')
         fig_scatter.update_layout(
-            xaxis_title="Active Pipeline Opportunity (₹ Cr)",
+            xaxis_title="Pipeline Opportunity (₹ Cr)",
             yaxis_title="Closed Revenue (₹ Cr)",
             showlegend=False,
-            height=400,
+            height=360,
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="white")
+            font=dict(color="#E7E9EA"),
+            margin=dict(t=20, b=40, l=40, r=20)
         )
-        st.plotly_chart(fig_scatter, use_container_width=True)
+        st.markdown('<div class="chart-header">Efficiency Matrix</div>', unsafe_allow_html=True)
+        st.plotly_chart(fig_scatter, use_container_width=True, config={'displayModeBar': False})
         
     with row1_col2:
-        st.markdown("##### Revenue Landscape (Sector & Brand)")
         # Group for Treemap - Filter out nulls
         tree_df = filtered_df[filtered_df['C3'] > 0].copy()
         # Remove rows with null or empty Type/Brand Name
@@ -389,31 +725,39 @@ with tab2:
                 color_continuous_scale='Greens'
             )
             fig_tree.update_layout(
-                height=400,
-                margin=dict(t=0, l=0, r=0, b=0),
+                height=360,
+                margin=dict(t=20, l=10, r=10, b=10),
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color="white")
+                font=dict(color="#E7E9EA")
             )
-            st.plotly_chart(fig_tree, use_container_width=True)
+            st.markdown('<div class="chart-header">Revenue Landscape</div>', unsafe_allow_html=True)
+            st.plotly_chart(fig_tree, use_container_width=True, config={'displayModeBar': False})
         else:
             st.info("No closed deals to display in Treemap.")
 
     # 3. Trends & Performance (Row 2)
-    st.markdown("### 📈 Trends & Performance")
     row2_col1, row2_col2 = st.columns(2)
     
     with row2_col1:
-        st.markdown("##### AVP Leaderboard")
         avp_perf = filtered_df.groupby('AVP')['C3'].sum().reset_index().sort_values('C3', ascending=True)
         avp_perf['C3_Cr'] = avp_perf['C3'] / 10000000
         
         fig_avp = px.bar(avp_perf, y='AVP', x='C3_Cr', orientation='h', text_auto='.1f', color='C3_Cr', color_continuous_scale='Blues')
-        fig_avp.update_layout(xaxis_title="C3 Value (₹ Cr)", yaxis_title=None, showlegend=False, height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="white"))
-        st.plotly_chart(fig_avp, use_container_width=True)
+        fig_avp.update_layout(
+            xaxis_title="C3 Value (₹ Cr)", 
+            yaxis_title=None, 
+            showlegend=False, 
+            height=340, 
+            paper_bgcolor="rgba(0,0,0,0)", 
+            plot_bgcolor="rgba(0,0,0,0)", 
+            font=dict(color="#E7E9EA"),
+            margin=dict(t=20, b=40, l=20, r=20)
+        )
+        st.markdown('<div class="chart-header">AVP Leaderboard</div>', unsafe_allow_html=True)
+        st.plotly_chart(fig_avp, use_container_width=True, config={'displayModeBar': False})
 
     with row2_col2:
-        st.markdown("##### Monthly Trend")
         monthly_trend = agg_df.copy()
         monthly_trend['C0_Cr'] = monthly_trend['C0'] / 10000000
         monthly_trend['C3_Cr'] = monthly_trend['C3'] / 10000000
@@ -421,8 +765,18 @@ with tab2:
         fig_trend = go.Figure()
         fig_trend.add_trace(go.Scatter(x=monthly_trend['Month_Year'], y=monthly_trend['C0_Cr'], mode='lines+markers', name='C0 (Ideation)'))
         fig_trend.add_trace(go.Scatter(x=monthly_trend['Month_Year'], y=monthly_trend['C3_Cr'], mode='lines+markers', name='C3 (Closed)'))
-        fig_trend.update_layout(yaxis_title="Value (₹ Cr)", hovermode="x unified", legend=dict(orientation="h", y=1.1), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="white"))
-        st.plotly_chart(fig_trend, use_container_width=True)
+        fig_trend.update_layout(
+            yaxis_title="Value (₹ Cr)", 
+            hovermode="x unified", 
+            legend=dict(orientation="h", y=1.2, x=0), 
+            height=340, 
+            paper_bgcolor="rgba(0,0,0,0)", 
+            plot_bgcolor="rgba(0,0,0,0)", 
+            font=dict(color="#E7E9EA"),
+            margin=dict(t=20, b=40, l=40, r=20)
+        )
+        st.markdown('<div class="chart-header">Monthly Revenue Trend</div>', unsafe_allow_html=True)
+        st.plotly_chart(fig_trend, use_container_width=True, config={'displayModeBar': False})
 
     # 4. Advanced AI Insights
     st.markdown("### 🤖 Advanced AI Insights")
