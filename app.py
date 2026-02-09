@@ -90,7 +90,7 @@ st.markdown("""
         background-color: #16181C;
         color: #71767B;
         padding: 0.75rem 1rem;
-        text-align: right;
+        text-align: center;
         font-weight: 600;
         border-bottom: 1px solid #2F3336;
         font-size: 0.75rem;
@@ -105,6 +105,8 @@ st.markdown("""
         left: 0;
         z-index: 3;
         background-color: #16181C;
+        width: 140px;
+        min-width: 140px;
     }
     
     .pipeline-table td {
@@ -122,6 +124,8 @@ st.markdown("""
         position: sticky;
         left: 0;
         z-index: 1;
+        width: 140px;
+        min-width: 140px;
     }
     
     .pipeline-table tr:hover td {
@@ -153,10 +157,15 @@ st.markdown("""
         width: 100% !important;
     }
     
-    /* Ensure markdown headers in columns don't add extra space */
-    .stMarkdown h3 {
+    /* Chart Headers Refinement */
+    .chart-header, .stMarkdown h3 {
         margin-top: 0 !important;
         margin-bottom: -0.5rem !important;
+        text-align: left !important; /* Move to left */
+        margin-left: 15px !important; /* but not extreme end */
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #E7E9EA;
     }
     
     .trend-up { color: #00BA7C !important; font-size: 0.8rem; margin-left: 8px; font-weight: 700; width: 45px; display: inline-block; text-align: left; }
@@ -175,8 +184,14 @@ st.markdown("""
     }
     
     .scroll-area {
-        max-height: 245px; /* Roughly 5 rows */
+        max-height: 300px; /* Increased to show 6 rows */
         overflow-y: auto;
+    }
+
+    .pipeline-table tbody::after {
+        content: "";
+        display: block;
+        height: 25px; /* Prevent total row overlapping last data row */
     }
 
     .scroll-area::-webkit-scrollbar {
