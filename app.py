@@ -105,13 +105,24 @@ st.markdown("""
         left: 0;
         z-index: 3;
         background-color: #16181C;
-        width: 140px;
+        width: 140px; /* Reverted to default for Pipeline */
         min-width: 140px;
+    }
+
+    /* Specialized Insights Table Styling */
+    .insights-table th:first-child {
+        text-align: center;
+        position: sticky;
+        left: 0;
+        z-index: 3;
+        background-color: #16181C;
+        width: 190px;
+        min-width: 190px;
     }
     
     .pipeline-table td {
         padding: 0.75rem 1rem;
-        text-align: right;
+        text-align: center;
         border-bottom: 1px solid #2F3336;
         background-color: #0E1117;
     }
@@ -124,8 +135,20 @@ st.markdown("""
         position: sticky;
         left: 0;
         z-index: 1;
-        width: 140px;
+        width: 140px; /* Reverted to default for Pipeline */
         min-width: 140px;
+    }
+
+    .insights-table td:first-child {
+        text-align: center;
+        font-weight: 500;
+        background-color: #16181C;
+        color: #E7E9EA;
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        width: 190px;
+        min-width: 190px;
     }
     
     .pipeline-table tr:hover td {
@@ -151,21 +174,26 @@ st.markdown("""
     div[data-testid="stPlotlyChart"] {
         border: 1px solid #2F3336;
         border-radius: 12px;
-        padding: 0.5rem;
+        padding: 0 !important;
         background-color: #0E1117;
+        margin-top: 5px !important; /* Nudge down to match table start */
         margin-bottom: 1.5rem;
         width: 100% !important;
+        height: 300px !important; /* Adjusted to keep bottom aligned */
     }
     
     /* Chart Headers Refinement */
     .chart-header, .stMarkdown h3 {
         margin-top: 0 !important;
-        margin-bottom: -0.5rem !important;
-        text-align: left !important; /* Move to left */
-        margin-left: 15px !important; /* but not extreme end */
+        margin-bottom: 0.5rem !important; /* Standard positive margin */
+        text-align: left !important;
+        margin-left: 15px !important;
         font-weight: 600;
         font-size: 1.1rem;
         color: #E7E9EA;
+        height: 1.5rem; /* Fixed height for top alignment */
+        display: flex;
+        align-items: center;
     }
     
     .trend-up { color: #00BA7C !important; font-size: 0.8rem; margin-left: 8px; font-weight: 700; width: 45px; display: inline-block; text-align: left; }
@@ -184,14 +212,20 @@ st.markdown("""
     }
     
     .scroll-area {
-        max-height: 300px; /* Increased to show 6 rows */
+        height: 305px !important; /* Exact match with Funnel height */
+        max-height: 305px !important;
         overflow-y: auto;
     }
 
-    .pipeline-table tbody::after {
+    .insights-scroll-area {
+        max-height: 255px; /* Display 5 rows cleanly, 6th visible via scroll */
+        overflow-y: auto;
+    }
+
+    .insights-table tbody::after {
         content: "";
         display: block;
-        height: 25px; /* Prevent total row overlapping last data row */
+        height: 25px; /* Prevent total row overlap only in Insights */
     }
 
     .scroll-area::-webkit-scrollbar {
@@ -515,9 +549,9 @@ if tab_choice == "Executive Overview":
             return f"₹{val:.2f} Cr"
 
         # HTML Construction - Professional Single Table with Sticky Header/Footer
-        rev_html = '<div class="table-wrapper">'
-        rev_html += '<div class="scroll-area">'
-        rev_html += '<table class="pipeline-table" style="margin:0;">'
+        rev_html = '<div class="table-wrapper" style="margin-top: 8px;">'
+        rev_html += '<div class="insights-scroll-area">'
+        rev_html += '<table class="pipeline-table insights-table" style="margin:0;">'
         
         # Header (Sticky in scroll-area via CSS or standard structure)
         rev_html += '<thead style="position: sticky; top: 0; z-index: 10;"><tr>'
@@ -610,7 +644,7 @@ if tab_choice == "Executive Overview":
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(color="#E7E9EA", size=10),
-        height=265,
+        height=305,
         showlegend=False,
         yaxis=dict(
             showticklabels=False, # Hide default right-aligned labels
@@ -655,6 +689,7 @@ if tab_choice == "Executive Overview":
 
     # Construct HTML Table with Trends
     html = '<div class="table-wrapper">'
+    html += '<div class="scroll-area">'
     html += '<table class="pipeline-table" style="margin:0;">'
     html += '<thead><tr><th>Month</th><th>C0 - Ideation</th><th>C1 - Pitch</th><th>C2 - Negotiation</th><th>C3 - Closed</th></tr></thead>'
     html += '<tbody>'
@@ -687,15 +722,18 @@ if tab_choice == "Executive Overview":
     html += '</tbody></table></div>'
 
     # Layout - Balanced Alignment with Fine-Tuned Spacer Column
-    col_table, col_spacer, col_funnel = st.columns([1.5, 0.05, 1])
-    
-    with col_table:
-        # Pull C0-C3 Pipeline header up to align with previous section
-        st.markdown('<div style="margin-top: -1.2rem;"><h3>C0-C3 Pipeline</h3></div>', unsafe_allow_html=True)
+    # ROW 1: Headers aligned on the same horizontal line
+    col_h_table, col_h_spacer, col_h_funnel = st.columns([1.5, 0.05, 1])
+    with col_h_table:
+        st.markdown('<div class="chart-header">C0-C3 Pipeline</div>', unsafe_allow_html=True)
+    with col_h_funnel:
+        st.markdown('<div class="chart-header">Funnel Analysis</div>', unsafe_allow_html=True)
+
+    # ROW 2: Content aligned on the same horizontal line
+    col_c_table, col_c_spacer, col_c_funnel = st.columns([1.5, 0.05, 1])
+    with col_c_table:
         st.markdown(html, unsafe_allow_html=True)
-    with col_funnel:
-        # Funnel Analysis header starts naturally lower, so we align it without the heavy negative margin
-        st.markdown('<div><h3>Funnel Analysis</h3></div>', unsafe_allow_html=True)
+    with col_c_funnel:
         st.plotly_chart(fig, use_container_width=True, config={'responsive': True, 'displayModeBar': False})
 
 
