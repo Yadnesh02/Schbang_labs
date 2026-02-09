@@ -218,7 +218,7 @@ st.markdown("""
     }
 
     .insights-scroll-area {
-        max-height: 255px; /* Display 5 rows cleanly, 6th visible via scroll */
+        max-height: 250px; /* Show 5 complete rows, 6th accessible via scroll */
         overflow-y: auto;
     }
 
