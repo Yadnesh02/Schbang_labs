@@ -25,6 +25,21 @@ st.set_page_config(
 # Custom CSS - X (Twitter) Inspired Professional Design
 st.markdown("""
 <style>
+    /* Force Dark Theme - Override System Preferences */
+    :root {
+        color-scheme: dark !important;
+    }
+    
+    html, body, [class*="css"], .stApp, [data-testid="stAppViewContainer"] {
+        background-color: #0E1117 !important;
+        color: #E7E9EA !important;
+    }
+    
+    /* Force dark background on main container */
+    .main, .block-container, [data-testid="stAppViewContainer"] > div {
+        background-color: #0E1117 !important;
+    }
+    
     html, body, [class*="css"] {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         font-size: 0.875rem; /* ~14px base */
@@ -74,7 +89,7 @@ st.markdown("""
         font-size: 1.5rem !important;
     }
     
-    /* Custom Table Styling - X Inspired */
+    /* Custom Table Styling - Dark Theme */
     .pipeline-table {
         width: 100%;
         border-collapse: separate;
@@ -105,7 +120,7 @@ st.markdown("""
         left: 0;
         z-index: 3;
         background-color: #16181C;
-        width: 140px; /* Reverted to default for Pipeline */
+        width: 140px;
         min-width: 140px;
     }
 
@@ -135,7 +150,7 @@ st.markdown("""
         position: sticky;
         left: 0;
         z-index: 1;
-        width: 140px; /* Reverted to default for Pipeline */
+        width: 140px;
         min-width: 140px;
     }
 
@@ -169,29 +184,28 @@ st.markdown("""
         font-weight: 600;
     }
 
-    /* Chart Container with Light Border */
-    /* Target Streamlit Plotly containers directly */
+    /* Chart Container with Dark Border */
     div[data-testid="stPlotlyChart"] {
         border: 1px solid #2F3336;
         border-radius: 12px;
         padding: 0 !important;
         background-color: #0E1117;
-        margin-top: 5px !important; /* Nudge down to match table start */
+        margin-top: 5px !important;
         margin-bottom: 1.5rem;
         width: 100% !important;
-        height: 300px !important; /* Adjusted to keep bottom aligned */
+        height: 300px !important;
     }
     
     /* Chart Headers Refinement */
     .chart-header, .stMarkdown h3 {
         margin-top: 0 !important;
-        margin-bottom: 0.5rem !important; /* Standard positive margin */
+        margin-bottom: 0.5rem !important;
         text-align: left !important;
         margin-left: 15px !important;
         font-weight: 600;
         font-size: 1.1rem;
         color: #E7E9EA;
-        height: 1.5rem; /* Fixed height for top alignment */
+        height: 1.5rem;
         display: flex;
         align-items: center;
     }
@@ -388,7 +402,7 @@ st.markdown("""
     }
 
     .header-container {
-        padding: 0.5rem 0 0.75rem 0 !important; /* Reduced top padding */
+        padding: 0.5rem 0 0.75rem 0 !important;
         border-bottom: 1px solid #2F3336;
         margin-bottom: 1.5rem !important;
     }
@@ -640,14 +654,14 @@ if tab_choice == "Executive Overview":
         connector = {"fillcolor": "#E0E0E0"}
     ))
     fig.update_layout(
-        margin=dict(t=30, b=10, l=120, r=10), # Large left margin for annotations
+        margin=dict(t=30, b=10, l=120, r=10),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(color="#E7E9EA", size=10),
         height=305,
         showlegend=False,
         yaxis=dict(
-            showticklabels=False, # Hide default right-aligned labels
+            showticklabels=False,
             automargin=False
         ),
         hoverlabel=dict(
@@ -663,14 +677,14 @@ if tab_choice == "Executive Overview":
     # Add manual left-aligned annotations for stage names
     for i, row in funnel_data.iterrows():
         fig.add_annotation(
-            x=-0.35, # Adjusted for visibility within the 120px margin
+            x=-0.35,
             y=row['Stage'],
             text=f"<b>{row['Stage']}</b>",
             showarrow=False,
             xref="paper",
             yref="y",
             xanchor="left",
-            font=dict(color="#E7E9EA", size=11.5), # Increased from 10
+            font=dict(color="#E7E9EA", size=11.5),
         )
     fig.update_traces(
         textfont=dict(size=11.5), # Increased font size within bars
@@ -788,7 +802,7 @@ else:
             height=360,
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="#E7E9EA"),
+            font=dict(color="#1D1D1F"),
             margin=dict(t=20, b=40, l=40, r=20)
         )
         st.markdown('<div class="chart-header">Conversion Efficiency</div>', unsafe_allow_html=True)
@@ -836,7 +850,7 @@ else:
             height=340, 
             paper_bgcolor="rgba(0,0,0,0)", 
             plot_bgcolor="rgba(0,0,0,0)", 
-            font=dict(color="#E7E9EA"),
+            font=dict(color="#1D1D1F"),
             margin=dict(t=20, b=40, l=20, r=20)
         )
         st.markdown('<div class="chart-header">AVP Leaderboard</div>', unsafe_allow_html=True)
@@ -857,7 +871,7 @@ else:
             height=340, 
             paper_bgcolor="rgba(0,0,0,0)", 
             plot_bgcolor="rgba(0,0,0,0)", 
-            font=dict(color="#E7E9EA"),
+            font=dict(color="#1D1D1F"),
             margin=dict(t=20, b=40, l=40, r=20)
         )
         st.markdown('<div class="chart-header">Monthly Revenue Trend</div>', unsafe_allow_html=True)
