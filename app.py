@@ -25,10 +25,9 @@ st.set_page_config(
 # Custom CSS - X (Twitter) Inspired Professional Design
 st.markdown("""
 <style>
-    /* Global Typography - Professional & Clean */
     html, body, [class*="css"] {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        font-size: 14px;
+        font-size: 0.875rem; /* ~14px base */
     }
     
     /* Reduce top padding */
@@ -101,7 +100,7 @@ st.markdown("""
     }
     
     .pipeline-table th:first-child {
-        text-align: left;
+        text-align: center;
         position: sticky;
         left: 0;
         z-index: 3;
@@ -116,7 +115,7 @@ st.markdown("""
     }
     
     .pipeline-table td:first-child {
-        text-align: left;
+        text-align: center;
         font-weight: 500;
         background-color: #16181C;
         color: #E7E9EA;
@@ -148,9 +147,10 @@ st.markdown("""
     div[data-testid="stPlotlyChart"] {
         border: 1px solid #2F3336;
         border-radius: 12px;
-        padding: 0.5rem; /* Tighter padding */
+        padding: 0.5rem;
         background-color: #0E1117;
         margin-bottom: 1.5rem;
+        width: 100% !important;
     }
     
     /* Ensure markdown headers in columns don't add extra space */
@@ -246,6 +246,38 @@ st.markdown("""
         to {
             background-position: 200% center;
         }
+    }
+
+    /* Responsive Adjustments & Zoom Safety */
+    @media (max-width: 1400px) {
+        .dashboard-title { font-size: 1.4rem !important; }
+        .header-container { padding: 0.25rem 0 !important; }
+    }
+
+    @media (max-width: 1200px) {
+        [data-testid="stHorizontalBlock"] {
+            flex-wrap: wrap !important;
+            gap: 1rem !important;
+        }
+        .dashboard-title { font-size: 1.25rem !important; }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-title { font-size: 1.1rem !important; }
+        .stMarkdown h3 { font-size: 1.1rem !important; }
+        .pipeline-table { font-size: 0.75rem !important; }
+    }
+
+    /* Table Responsiveness Enhancements */
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .pipeline-table {
+        min-width: 600px; /* Force scroll on narrow screens instead of squashing */
+        width: 100%;
     }
 
     /* Styled Radio as Tabs */
@@ -649,7 +681,7 @@ if tab_choice == "Executive Overview":
     with col_funnel:
         # Funnel Analysis header starts naturally lower, so we align it without the heavy negative margin
         st.markdown('<div><h3>Funnel Analysis</h3></div>', unsafe_allow_html=True)
-        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+        st.plotly_chart(fig, use_container_width=True, config={'responsive': True, 'displayModeBar': False})
 
 
 else:
@@ -706,8 +738,8 @@ else:
             font=dict(color="#E7E9EA"),
             margin=dict(t=20, b=40, l=40, r=20)
         )
-        st.markdown('<div class="chart-header">Efficiency Matrix</div>', unsafe_allow_html=True)
-        st.plotly_chart(fig_scatter, use_container_width=True, config={'displayModeBar': False})
+        st.markdown('<div class="chart-header">Conversion Efficiency</div>', unsafe_allow_html=True)
+        st.plotly_chart(fig_scatter, use_container_width=True, config={'responsive': True, 'displayModeBar': False})
         
     with row1_col2:
         # Group for Treemap - Filter out nulls
@@ -732,7 +764,7 @@ else:
                 font=dict(color="#E7E9EA")
             )
             st.markdown('<div class="chart-header">Revenue Landscape</div>', unsafe_allow_html=True)
-            st.plotly_chart(fig_tree, use_container_width=True, config={'displayModeBar': False})
+            st.plotly_chart(fig_tree, use_container_width=True, config={'responsive': True, 'displayModeBar': False})
         else:
             st.info("No closed deals to display in Treemap.")
 
@@ -755,7 +787,7 @@ else:
             margin=dict(t=20, b=40, l=20, r=20)
         )
         st.markdown('<div class="chart-header">AVP Leaderboard</div>', unsafe_allow_html=True)
-        st.plotly_chart(fig_avp, use_container_width=True, config={'displayModeBar': False})
+        st.plotly_chart(fig_avp, use_container_width=True, config={'responsive': True, 'displayModeBar': False})
 
     with row2_col2:
         monthly_trend = agg_df.copy()
@@ -776,7 +808,7 @@ else:
             margin=dict(t=20, b=40, l=40, r=20)
         )
         st.markdown('<div class="chart-header">Monthly Revenue Trend</div>', unsafe_allow_html=True)
-        st.plotly_chart(fig_trend, use_container_width=True, config={'displayModeBar': False})
+        st.plotly_chart(fig_trend, use_container_width=True, config={'responsive': True, 'displayModeBar': False})
 
     # 4. Advanced AI Insights
     st.markdown("### 🤖 Advanced AI Insights")
