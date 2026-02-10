@@ -388,7 +388,6 @@ st.markdown("""
         .dashboard-title { font-size: 1.5rem !important; }
         .pipeline-table { font-size: 0.85rem; }
         .chart-header { font-size: 1.05rem; }
-        div[data-testid="stPlotlyChart"] { height: auto !important; }
         .scroll-area { height: 207px !important; max-height: 207px !important; }
     }
     
@@ -398,7 +397,6 @@ st.markdown("""
         .pipeline-table { font-size: 0.8rem; }
         .pipeline-table th, .pipeline-table td { padding: 0.6rem 0.8rem; }
         .chart-header { font-size: 1rem; }
-        div[data-testid="stPlotlyChart"] { height: auto !important; }
         .scroll-area { height: 207px !important; max-height: 207px !important; }
         .header-container { padding: 0.4rem 0 0.6rem 0 !important; }
     }
@@ -409,7 +407,6 @@ st.markdown("""
         .pipeline-table { font-size: 0.75rem; }
         .pipeline-table th, .pipeline-table td { padding: 0.5rem 0.7rem; }
         .chart-header { font-size: 0.95rem; }
-        div[data-testid="stPlotlyChart"] { height: auto !important; }
         .scroll-area { height: 207px !important; max-height: 207px !important; }
         .insights-scroll-area { max-height: 220px; }
         .header-container { padding: 0.3rem 0 0.5rem 0 !important; }
@@ -422,7 +419,6 @@ st.markdown("""
         .pipeline-table { font-size: 0.7rem; }
         .pipeline-table th, .pipeline-table td { padding: 0.4rem 0.6rem; }
         .chart-header { font-size: 0.9rem; }
-        div[data-testid="stPlotlyChart"] { height: auto !important; }
         .scroll-area { height: 207px !important; max-height: 207px !important; }
         .insights-scroll-area { max-height: 200px; }
         [data-testid="stHorizontalBlock"] {
@@ -438,7 +434,6 @@ st.markdown("""
         .pipeline-table { font-size: 0.65rem; }
         .pipeline-table th, .pipeline-table td { padding: 0.35rem 0.5rem; }
         .chart-header, .stMarkdown h3 { font-size: 0.85rem !important; }
-        div[data-testid="stPlotlyChart"] { height: auto !important; }
         .scroll-area { height: 207px !important; max-height: 207px !important; }
         .insights-scroll-area { max-height: 180px; }
         [data-testid="stHorizontalBlock"] {
@@ -907,7 +902,7 @@ else:
         fig_conv.update_layout(
             xaxis_title='Conversion Rate (%)',
             yaxis_title=None,
-            height=202,
+            height=250,
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             font=dict(color="#E7E9EA", size=10),
@@ -930,7 +925,7 @@ else:
         
         # Create metrics HTML manually to keep inside container
         metrics_html = f"""
-        <div style='height: 202px; display: flex; flex-direction: column; justify-content: center; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 0.8rem;'>
+        <div style='height: 250px; display: flex; flex-direction: column; justify-content: center; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 0.8rem;'>
             <div style='display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 0.6rem; height: 100%;'>
                 <div style='background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; display: flex; flex-direction: column; justify-content: center;'>
                     <div style='font-size: 0.75rem; color: #8B949E; margin-bottom: 0.3rem;'>Total Deals</div>
@@ -1001,7 +996,7 @@ else:
     fig_perf.update_layout(
         xaxis_title='Total Pipeline (₹ Cr)',
         yaxis_title='Conversion Rate (%)',
-        height=210,
+        height=250,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(color="#E7E9EA", size=10),
@@ -1088,7 +1083,7 @@ else:
             )
             
             fig_brands.update_layout(
-                height=198,
+                height=250,
                 margin=dict(t=5, b=5, l=5, r=5),
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
@@ -1208,7 +1203,7 @@ else:
                 bgcolor='rgba(0,0,0,0)',
                 font=dict(size=9)
             ),
-            height=220,
+            height=250,
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             font=dict(color="#E7E9EA", size=10),
