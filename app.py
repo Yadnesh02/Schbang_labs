@@ -542,6 +542,26 @@ st.markdown("""
     .block-container {
         padding-top: 1.5rem !important; /* Reduced from 3.5rem */
     }
+    
+    /* Prevent auto-scroll behavior */
+    html {
+        scroll-behavior: auto !important;
+    }
+    
+    /* Prevent focus outlines that trigger scroll */
+    * {
+        scroll-margin-top: 0 !important;
+        scroll-margin-bottom: 0 !important;
+    }
+    
+    /* Prevent Plotly charts from taking focus */
+    .js-plotly-plot, .plotly, [data-testid="stPlotlyChart"] {
+        pointer-events: auto !important;
+    }
+    
+    .js-plotly-plot .plotly .main-svg {
+        overflow: visible !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
