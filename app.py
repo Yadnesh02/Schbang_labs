@@ -388,7 +388,6 @@ st.markdown("""
         .dashboard-title { font-size: 1.5rem !important; }
         .pipeline-table { font-size: 0.85rem; }
         .chart-header { font-size: 1.05rem; }
-        div[data-testid="stPlotlyChart"] { height: auto !important; }
         .scroll-area { height: 207px !important; max-height: 207px !important; }
     }
     
@@ -398,7 +397,6 @@ st.markdown("""
         .pipeline-table { font-size: 0.8rem; }
         .pipeline-table th, .pipeline-table td { padding: 0.6rem 0.8rem; }
         .chart-header { font-size: 1rem; }
-        div[data-testid="stPlotlyChart"] { height: auto !important; }
         .scroll-area { height: 207px !important; max-height: 207px !important; }
         .header-container { padding: 0.4rem 0 0.6rem 0 !important; }
     }
@@ -409,7 +407,6 @@ st.markdown("""
         .pipeline-table { font-size: 0.75rem; }
         .pipeline-table th, .pipeline-table td { padding: 0.5rem 0.7rem; }
         .chart-header { font-size: 0.95rem; }
-        div[data-testid="stPlotlyChart"] { height: auto !important; }
         .scroll-area { height: 207px !important; max-height: 207px !important; }
         .insights-scroll-area { max-height: 220px; }
         .header-container { padding: 0.3rem 0 0.5rem 0 !important; }
@@ -422,7 +419,6 @@ st.markdown("""
         .pipeline-table { font-size: 0.7rem; }
         .pipeline-table th, .pipeline-table td { padding: 0.4rem 0.6rem; }
         .chart-header { font-size: 0.9rem; }
-        div[data-testid="stPlotlyChart"] { height: auto !important; }
         .scroll-area { height: 207px !important; max-height: 207px !important; }
         .insights-scroll-area { max-height: 200px; }
         [data-testid="stHorizontalBlock"] {
@@ -438,7 +434,6 @@ st.markdown("""
         .pipeline-table { font-size: 0.65rem; }
         .pipeline-table th, .pipeline-table td { padding: 0.35rem 0.5rem; }
         .chart-header, .stMarkdown h3 { font-size: 0.85rem !important; }
-        div[data-testid="stPlotlyChart"] { height: auto !important; }
         .scroll-area { height: 207px !important; max-height: 207px !important; }
         .insights-scroll-area { max-height: 180px; }
         [data-testid="stHorizontalBlock"] {
@@ -542,15 +537,20 @@ st.markdown("""
     .block-container {
         padding-top: 1.5rem !important; /* Reduced from 3.5rem */
     }
+    
+
 </style>
 """, unsafe_allow_html=True)
 
 # Load Data
 df = load_google_sheet_data()
+# Default filter: Start from October 2025 onwards
+if not df.empty:
+    df = df[df['Month222'] >= '2025-10-01']
 rev_df = load_revenue_summary_data()
 
 if df.empty:
-    st.error("No data found in the Google Sheet. Please verify the sheet content and formatting.")
+    st.error("Failed to load data. Please check the internet connection or Google Sheet permissions.")
     st.stop()
 
 # --- Prepare Pipeline Data (for Filters) ---
@@ -902,7 +902,7 @@ else:
         fig_conv.update_layout(
             xaxis_title='Conversion Rate (%)',
             yaxis_title=None,
-            height=202,
+            height=250,
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             font=dict(color="#E7E9EA", size=10),
@@ -912,7 +912,7 @@ else:
             xaxis=dict(fixedrange=True, range=[0, 100]),
             yaxis=dict(fixedrange=True)
         )
-        st.plotly_chart(fig_conv, use_container_width=True, config={'displayModeBar': False})
+        st.plotly_chart(fig_conv, use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False}, key="funnel_chart")
     
     with conv_col2:
         st.markdown('<div class="chart-header">Pipeline Health Metrics</div>', unsafe_allow_html=True)
@@ -925,7 +925,7 @@ else:
         
         # Create metrics HTML manually to keep inside container
         metrics_html = f"""
-        <div style='height: 202px; display: flex; flex-direction: column; justify-content: center; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 0.8rem;'>
+        <div style='height: 250px; display: flex; flex-direction: column; justify-content: center; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 0.8rem;'>
             <div style='display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 0.6rem; height: 100%;'>
                 <div style='background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; display: flex; flex-direction: column; justify-content: center;'>
                     <div style='font-size: 0.75rem; color: #8B949E; margin-bottom: 0.3rem;'>Total Deals</div>
@@ -985,19 +985,32 @@ else:
                    'Avg Deal Size (Cr)': ':.2f'}
     )
     fig_perf.update_traces(textposition='top center', textfont=dict(size=11))
+    
+    # Calculate y-axis range with padding to prevent label clipping
+    if len(avp_perf) > 0:
+        max_conversion = avp_perf['Conversion Rate (%)'].max()
+        y_max_perf = max_conversion * 1.30  # Add 30% padding above max value
+    else:
+        y_max_perf = 100
+    
     fig_perf.update_layout(
         xaxis_title='Total Pipeline (₹ Cr)',
         yaxis_title='Conversion Rate (%)',
-        height=210,
+        height=250,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(color="#E7E9EA", size=10),
         margin=dict(t=35, b=35, l=45, r=20),
         xaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', fixedrange=True),
-        yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', fixedrange=True),
+        yaxis=dict(
+            showgrid=True, 
+            gridcolor='rgba(255,255,255,0.05)', 
+            fixedrange=True,
+            range=[0, y_max_perf]
+        ),
         showlegend=False
     )
-    st.plotly_chart(fig_perf, use_container_width=True, config={'displayModeBar': False})
+    st.plotly_chart(fig_perf, use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False}, key="perf_matrix")
     
     st.markdown("<div style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
     
@@ -1026,33 +1039,57 @@ else:
                 }])
                 treemap_df = pd.concat([treemap_df, others_row], ignore_index=True)
                 
-            # Assign professional discrete colors to each brand
-            color_palette = ['#1565C0', '#1976D2', '#42A5F5', '#00BA7C', '#2196F3', '#546E7A']
-            treemap_df['Color'] = [color_palette[i % len(color_palette)] for i in range(len(treemap_df))]
+            # Professional color palette - sophisticated gradient
+            color_palette = [
+                '#0A4D68',  # Deep teal (darkest)
+                '#088395',  # Ocean blue
+                '#05BFDB',  # Bright cyan
+                '#00D9FF',  # Vibrant cyan
+                '#7FDBFF',  # Light cyan
+                '#B8E6F0'   # Pale cyan (lightest - for Others)
+            ]
+            
+            # Assign colors based on revenue (highest to lowest)
+            treemap_df['Color'] = color_palette[:len(treemap_df)]
+            
+            # Determine text color based on background brightness
+            def get_text_color(hex_color):
+                # Convert hex to RGB
+                hex_color = hex_color.lstrip('#')
+                r, g, b = int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
+                # Calculate luminance
+                luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+                return '#FFFFFF' if luminance < 0.6 else '#1A1A1A'
+            
+            treemap_df['TextColor'] = treemap_df['Color'].apply(get_text_color)
             
             fig_brands = px.treemap(
                 treemap_df,
                 path=['Brand'],
                 values='Revenue (Cr)',
-                color='Brand',
-                color_discrete_map={row['Brand']: row['Color'] for _, row in treemap_df.iterrows()}
+                color='Color',
+                color_discrete_map={c: c for c in color_palette}
             )
             
             fig_brands.update_traces(
                 textinfo="label+text",
-                text=[f"₹{r:.1f}Cr<br>{s:.1f}%" for r, s in zip(treemap_df['Revenue (Cr)'], treemap_df['Share'])],
+                text=[f"₹{r:.1f}Cr ({s:.1f}%)" for r, s in zip(treemap_df['Revenue (Cr)'], treemap_df['Share'])],
                 hovertemplate='<b>%{label}</b><br>Revenue: ₹%{value:.2f}Cr<extra></extra>',
-                textfont=dict(size=11, color="#FFFFFF", family="Arial")
+                textfont=dict(size=11),
+                marker=dict(
+                    colors=treemap_df['Color'].tolist(),
+                    line=dict(color='#2C2C2C', width=2)
+                )
             )
             
             fig_brands.update_layout(
-                height=198,
+                height=250,
                 margin=dict(t=5, b=5, l=5, r=5),
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
-                showlegend=False
+                coloraxis_showscale=False
             )
-            st.plotly_chart(fig_brands, use_container_width=True, config={'displayModeBar': False})
+            st.plotly_chart(fig_brands, use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False}, key="treemap_chart")
         else:
             st.info("No C3 revenue data available for current selection.")
     
@@ -1148,20 +1185,38 @@ else:
             textfont=dict(size=7)
         ))
         
+        # Calculate y-axis range with padding to prevent label clipping
+        all_values = list(monthly_trend['C0_Cr']) + list(monthly_trend['C3_Cr']) + list(forecast_c0) + list(forecast_c3)
+        max_value = max(all_values)
+        y_max = max_value * 1.25  # Add 25% padding above max value
+        
         fig_trend.update_layout(
             yaxis_title='Value (₹ Cr)',
             xaxis_title=None,
             hovermode='x unified',
-            legend=dict(orientation="h", y=1.15, x=0, bgcolor='rgba(0,0,0,0)', font=dict(size=9)),
-            height=198,
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="center",
+                x=0.5,
+                bgcolor='rgba(0,0,0,0)',
+                font=dict(size=9)
+            ),
+            height=250,
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             font=dict(color="#E7E9EA", size=10),
             margin=dict(t=45, b=30, l=45, r=45),
             xaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', fixedrange=True),
-            yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', fixedrange=True)
+            yaxis=dict(
+                showgrid=True, 
+                gridcolor='rgba(255,255,255,0.05)', 
+                fixedrange=True,
+                range=[0, y_max]
+            )
         )
-        st.plotly_chart(fig_trend, use_container_width=True, config={'displayModeBar': False})
+        st.plotly_chart(fig_trend, use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False}, key="trends_chart")
     
 
 
