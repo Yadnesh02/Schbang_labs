@@ -25,6 +25,16 @@ st.set_page_config(
 # Custom CSS - X (Twitter) Inspired Professional Design
 st.markdown("""
 <style>
+    /* Hide scrollbars globally */
+    ::-webkit-scrollbar {
+        display: none;
+    }
+    
+    html {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+
     /* Force Dark Theme - Override System Preferences */
     :root {
         color-scheme: dark !important;
