@@ -170,6 +170,13 @@ st.markdown("""
         background-color: #1A1D23;
     }
     
+    .pipeline-table td {
+        padding: 0.5rem 1rem !important; /* Reduced for compact height */
+        text-align: center;
+        border-bottom: 1px solid #2F3336;
+        background-color: #0E1117;
+    }
+    
     .pipeline-table .total-row td {
         background-color: #16181C;
         font-weight: 700;
@@ -177,6 +184,7 @@ st.markdown("""
         border-bottom: none;
         color: #FFFFFF;
         text-align: center !important;
+        padding: 0.5rem 1rem !important; /* Matches data rows */
     }
     
     .deficit-negative {
@@ -189,23 +197,21 @@ st.markdown("""
         border: 1px solid #2F3336;
         border-radius: 12px;
         padding: 0.5rem !important;
-        background-color: #0E1117;
-        margin-top: 5px !important;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem !important; /* Restored from 0.5rem for stability */
         width: 100% !important;
-        height: 270px !important;
-        overflow: hidden;
+        height: 450px !important; 
+        overflow: hidden; /* Restored to prevent row bleeding */
         box-sizing: border-box;
     }
     
     /* Chart Headers Refinement */
     .chart-header, .stMarkdown h3 {
-        margin-top: 0 !important;
+        margin-top: 1rem !important; /* Moved down slightly */
         margin-bottom: 0.5rem !important;
         text-align: left !important;
         margin-left: 15px !important;
         font-weight: 600;
-        font-size: 1.1rem;
+        font-size: 1.6rem;
         color: #E7E9EA;
         height: 1.5rem;
         display: flex;
@@ -223,14 +229,14 @@ st.markdown("""
         border-radius: 12px;
         overflow: hidden;
         margin-top: 0 !important;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem !important; /* Restored for spacing */
         padding: 0 !important;
     }
     
     .scroll-area {
-        height: 305px !important; /* Exact match with Funnel height */
-        max-height: 305px !important;
-        overflow-y: auto;
+        height: 450px !important; /* Increased from 350px to match larger charts */
+        max-height: 450px !important;
+        overflow-y: hidden; /* Remove scrollbar */
     }
 
     .insights-scroll-area {
@@ -449,62 +455,66 @@ st.markdown("""
         width: 100%;
     }
 
-    /* Styled Radio as Tabs */
+    /* Professional Pill-Style Toggle for Type */
     div[data-testid="stRadio"] > label {
         display: none !important;
     }
 
     div[data-testid="stRadio"] div[role="radiogroup"] {
+        background-color: #16181C !important;
+        border-radius: 100px !important;
+        padding: 2px !important; /* Reduced from 4px */
+        gap: 2px !important; /* Reduced from 4px */
+        border: 1px solid #2F3336 !important;
+        display: flex !important;
         flex-direction: row !important;
-        gap: 1.25rem !important;
+        width: fit-content !important;
+        margin-top: 2px !important;
     }
 
     div[data-testid="stRadio"] div[role="radiogroup"] label {
         background-color: transparent !important;
-        border: none !important;
-        padding: 0 !important;
+        border-radius: 100px !important;
+        padding: 4px 12px !important; /* Reduced from 6px 16px */
         margin: 0 !important;
         cursor: pointer !important;
+        transition: all 0.2s ease-in-out !important;
+        flex: 1 !important;
+        min-width: 70px !important; /* Reduced from 80px */
+        justify-content: center !important;
+        white-space: nowrap !important; /* Prevent text wrap */
     }
 
-    /* Hide the radio circle */
-    div[data-testid="stRadio"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
-        font-size: 0.875rem !important;
-        font-weight: 600 !important;
-        color: #71767B !important;
-        transition: color 0.2s ease;
-        margin: 0 !important;
-    }
-
-    div[data-testid="stRadio"] div[role="radiogroup"] label:hover div[data-testid="stMarkdownContainer"] p {
-        color: #E7E9EA !important;
-    }
-
-    /* Selection Indicator (Green Underline) */
-    div[data-testid="stRadio"] div[role="radiogroup"] label[data-baseweb="radio"]:has(input:checked) div[data-testid="stMarkdownContainer"] p {
-        color: #00BA7C !important;
-        border-bottom: 2px solid #00BA7C;
-        padding-bottom: 2px;
-    }
-
-    /* Hide radio input circle specifically */
-    div[data-testid="stRadio"] div[role="radiogroup"] [data-testid="stWidgetLabel"] {
-        display: none !important;
-    }
-
-    /* Target the radio button element itself to hide the circle */
-    div[data-testid="stRadio"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] ~ div {
-        display: none !important;
-    }
-    
-    /* Alternative more robust circle hiding */
-    div[data-testid="stRadio"] div[role="radiogroup"] label [class*="st-"] {
-        /* We want to hide the SVG or the circle but NOT the text container */
-    }
-    
-    /* Surgical hide of the radio circle/dot */
+    /* Hide the default radio circle/dot */
     div[data-testid="stRadio"] div[role="radiogroup"] label div:first-child:not([data-testid="stMarkdownContainer"]) {
         display: none !important;
+    }
+
+    /* Target the text container */
+    div[data-testid="stRadio"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
+        font-size: 0.75rem !important; /* Reduced from 0.8rem */
+        font-weight: 600 !important;
+        color: #71767B !important;
+        margin: 0 !important;
+        text-align: center !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.02em !important;
+        white-space: nowrap !important; /* Extra insurance */
+    }
+
+    /* Active State: The "Pill" effect */
+    div[data-testid="stRadio"] div[role="radiogroup"] label[data-baseweb="radio"]:has(input:checked) {
+        background-color: #2F3336 !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+    }
+
+    div[data-testid="stRadio"] div[role="radiogroup"] label[data-baseweb="radio"]:has(input:checked) div[data-testid="stMarkdownContainer"] p {
+        color: #FFFFFF !important;
+    }
+
+    /* Hover effect for inactive */
+    div[data-testid="stRadio"] div[role="radiogroup"] label:not(:has(input:checked)):hover div[data-testid="stMarkdownContainer"] p {
+        color: #E7E9EA !important;
     }
 
     .header-container {
@@ -522,6 +532,9 @@ st.markdown("""
 
 # Load Data
 df = load_google_sheet_data()
+# Default filter: Start from October 2025 onwards
+if not df.empty:
+    df = df[df['Month222'] >= '2025-10-01']
 rev_df = load_revenue_summary_data()
 
 if df.empty:
@@ -554,8 +567,8 @@ def prepare_shared_data(filtered_df):
 
 # --- Consolidated Header Row ---
 st.markdown('<div class="header-container">', unsafe_allow_html=True)
-# Adjusted Ratios: Brand(1.5), Tabs(1.8), Filters(1, 1, 1, 1)
-col_brand, col_tabs, col1, col2, col3, col4 = st.columns([1.5, 1.8, 1, 1, 1, 1])
+# Ratios: Logo/Title, Nav Tabs, Type Toggle, Month, SBUs
+col_brand, col_tabs, col_type, col_month, col_sbu = st.columns([2.5, 1.4, 0.9, 0.8, 0.8])
 
 with col_brand:
     # Look for common logo filenames
@@ -580,24 +593,21 @@ with col_brand:
         st.markdown(f'<div class="dashboard-title">Schbang C0-C3</div>', unsafe_allow_html=True)
 
 with col_tabs:
-    # Custom Radio Tabs (Using horizontal radio for toggle feel)
+    # Custom Radio Tabs
     tab_choice = st.radio("Nav", ["Executive Overview", "Deep Dive & Insights"], horizontal=True, label_visibility="collapsed")
 
-with col1:
+with col_type:
+    # Professional pill-style toggle for Type
+    selected_type = st.radio("Type", options=["VAS", "Retainer"], index=0, horizontal=True, label_visibility="collapsed")
+
+with col_month:
     month_options = df.sort_values('Month222')['Month_Year'].dropna().unique().tolist()
     selected_months = st.multiselect("Month", options=month_options, placeholder="Month", label_visibility="collapsed")
 
-with col2:
-    avp_options = sorted(df['AVP'].dropna().unique().tolist())
-    selected_avp = st.multiselect("AVP", options=avp_options, placeholder="AVP", label_visibility="collapsed")
+with col_sbu:
+    sbu_options = sorted(df['SBUs'].dropna().unique().tolist())
+    selected_sbu = st.multiselect("SBUs", options=sbu_options, placeholder="SBUs", label_visibility="collapsed")
 
-with col3:
-    brand_options = sorted(df['Brand Name'].dropna().unique().tolist())
-    selected_brand = st.multiselect("Brand Name", options=brand_options, placeholder="Brand Name", label_visibility="collapsed")
-
-with col4:
-    type_options = sorted(df['Type'].dropna().unique().tolist())
-    selected_type = st.multiselect("Type", options=type_options, placeholder="Type", label_visibility="collapsed")
 st.markdown('</div>', unsafe_allow_html=True)
 
 # --- Filter Logic ---
@@ -606,122 +616,26 @@ filtered_df = df.copy()
 if selected_months:
     filtered_df = filtered_df[filtered_df['Month_Year'].isin(selected_months)]
 
-if selected_avp:
-    filtered_df = filtered_df[filtered_df['AVP'].isin(selected_avp)]
+if selected_sbu:
+    filtered_df = filtered_df[filtered_df['SBUs'].isin(selected_sbu)]
 
-if selected_brand:
-    filtered_df = filtered_df[filtered_df['Brand Name'].isin(selected_brand)]
-
-if selected_type:
-    filtered_df = filtered_df[filtered_df['Type'].isin(selected_type)]
+# Type Toggle Filtering (Always applies since it's a radio)
+filtered_df = filtered_df[filtered_df['Type'] == selected_type]
 
 # Execute shared data preparation
 agg_df, display_df, total_data = prepare_shared_data(filtered_df)
+
+# Consolidate Calculations for Insights (Shared by both tabs)
+brand_perf = filtered_df.groupby('Brand Name')['C3'].sum().sort_values(ascending=False)
+avp_metrics = filtered_df.groupby('AVP')[['C0', 'C1', 'C2', 'C3']].sum().reset_index()
+avp_metrics['Total Pipeline'] = (avp_metrics['C0'] + avp_metrics['C1'] + avp_metrics['C2']) / 10000000
+avp_metrics['Realized Value'] = avp_metrics['C3'] / 10000000
 
 # ==========================================
 # MAIN CONTENT
 # ==========================================
 if tab_choice == "Executive Overview":
-    # --- FY'25 - 26 Summary Table (Placed after Filters) ---
-    if not rev_df.empty:
-        st.markdown("### FY'25 - 26 Insights")
-        
-        # Process Revenue Data
-        def clean_currency(val):
-            if isinstance(val, str):
-                val = val.replace('₹', '').replace(',', '').replace(' Cr', '').strip()
-                return float(val) if val else 0.0
-            return float(val) if val else 0.0
 
-        rev_cols_map = {
-            'SBUs': 'SBUs',
-            'Annual Target111': 'Annual Target',
-            'H1 Target111': 'H1 Target',
-            'H1 Achieved111': 'H1 Achieved',
-            'H1 Deficit111': 'H1 Deficit',
-            'H2 Target111': 'H2 Target',
-            'H2 Target + H1 Deficit111': 'H1 Deficit + H2 Target',
-            'Balance H2 Target111': 'Balance H2 Target'
-        }
-        
-        needed_cols = list(rev_cols_map.keys())
-        available_cols = [c for c in needed_cols if c in rev_df.columns]
-        
-        summary_df = rev_df[available_cols].copy()
-        summary_df.rename(columns=rev_cols_map, inplace=True)
-        
-        numeric_cols = [
-            'Annual Target', 'H1 Target', 'H1 Achieved', 'H1 Deficit', 
-            'H2 Target', 'H1 Deficit + H2 Target', 'Balance H2 Target'
-        ]
-        
-        for col in numeric_cols:
-            if col in summary_df.columns:
-                summary_df[col] = summary_df[col].apply(clean_currency) / 10000000
-        
-        # Calculate Total Row
-        total_rev_row = summary_df[numeric_cols].sum()
-        total_rev_dict = {'SBUs': 'TOTAL'}
-        for col in numeric_cols:
-            total_rev_dict[col] = total_rev_row[col]
-            
-        def fmt_curr(val):
-            return f"₹{val:.2f} Cr"
-
-        # HTML Construction - Professional Single Table with Sticky Header/Footer
-        rev_html = '<div class="table-wrapper" style="margin-top: 8px;">'
-        rev_html += '<div class="insights-scroll-area">'
-        rev_html += '<table class="pipeline-table insights-table" style="margin:0;">'
-        
-        # Header (Sticky in scroll-area via CSS or standard structure)
-        rev_html += '<thead style="position: sticky; top: 0; z-index: 10;"><tr>'
-        rev_html += '<th>SBUs</th>'
-        rev_html += '<th>Annual Target</th>'
-        rev_html += '<th>H1 Target</th>'
-        rev_html += '<th>H1 Achieved</th>'
-        rev_html += '<th>H1 Deficit</th>'
-        rev_html += '<th>H2 Target</th>'
-        rev_html += '<th>H1 Deficit + H2 Target</th>'
-        rev_html += '<th>Balance H2 Target</th>'
-        rev_html += '</tr></thead>'
-        
-        rev_html += '<tbody>'
-        for _, row in summary_df.iterrows():
-            sbu = row.get('SBUs', '')
-            if pd.isna(sbu) or str(sbu).strip() == '':
-                continue
-                
-            rev_html += f"<tr><td>{sbu}</td>"
-            rev_html += f"<td>{fmt_curr(row.get('Annual Target', 0))}</td>"
-            rev_html += f"<td>{fmt_curr(row.get('H1 Target', 0))}</td>"
-            rev_html += f"<td>{fmt_curr(row.get('H1 Achieved', 0))}</td>"
-            
-            deficit = row.get('H1 Deficit', 0)
-            rev_html += f"<td class='deficit-negative'>▼ {fmt_curr(abs(deficit))}</td>" 
-            
-            rev_html += f"<td>{fmt_curr(row.get('H2 Target', 0))}</td>"
-            rev_html += f"<td>{fmt_curr(row.get('H1 Deficit + H2 Target', 0))}</td>"
-            rev_html += f"<td>{fmt_curr(row.get('Balance H2 Target', 0))}</td>"
-            rev_html += "</tr>"
-        rev_html += "</tbody>"
-        
-        # Footer
-        rev_html += '<tfoot style="position: sticky; bottom: 0; z-index: 10;">'
-        rev_html += "<tr class='total-row'>"
-        rev_html += '<td>TOTAL</td>'
-        rev_html += f'<td>{fmt_curr(total_rev_dict["Annual Target"])}</td>'
-        rev_html += f'<td>{fmt_curr(total_rev_dict["H1 Target"])}</td>'
-        rev_html += f'<td>{fmt_curr(total_rev_dict["H1 Achieved"])}</td>'
-        rev_html += f'<td class="deficit-negative">▼ {fmt_curr(abs(total_rev_dict["H1 Deficit"]))}</td>'
-        rev_html += f'<td>{fmt_curr(total_rev_dict["H2 Target"])}</td>'
-        rev_html += f'<td>{fmt_curr(total_rev_dict["H1 Deficit + H2 Target"])}</td>'
-        rev_html += f'<td>{fmt_curr(total_rev_dict["Balance H2 Target"])}</td>'
-        rev_html += "</tr></tfoot>"
-        
-        rev_html += "</table></div></div>"
-        st.markdown(rev_html, unsafe_allow_html=True)
-        # Add significant vertical spacing after the first section
-        st.markdown('<div style="margin-bottom: 1rem;"></div>', unsafe_allow_html=True)
 
 
     # --- Pipeline Section ---
@@ -763,8 +677,8 @@ if tab_choice == "Executive Overview":
         margin=dict(t=8, b=18, l=135, r=10),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#E7E9EA", size=6),
-        height=210,
+        font=dict(color="#E7E9EA", size=10),
+        height=230,
         showlegend=False,
         yaxis=dict(
             showticklabels=False,
@@ -790,10 +704,10 @@ if tab_choice == "Executive Overview":
             xref="paper",
             yref="y",
             xanchor="left",
-            font=dict(color="#E7E9EA", size=8.5),
+            font=dict(color="#E7E9EA", size=11),
         )
     fig.update_traces(
-        textfont=dict(size=8),
+        textfont=dict(size=10),
         textinfo="value+percent initial",
         texttemplate="%{value}<br>%{percentInitial:.0%}",
         hovertemplate=(
@@ -856,136 +770,24 @@ if tab_choice == "Executive Overview":
     with col_c_funnel:
         st.plotly_chart(fig, use_container_width=True, config={'responsive': True, 'displayModeBar': False})
 
+    # 4. c0c3 Insights (Consolidated Executive Insights)
+    st.markdown('<div class="chart-header" style="margin-top: 0.25rem; margin-bottom: 1rem;">🤖 c0c3 Insights</div>', unsafe_allow_html=True)
+    
+    # --- Calculate metrics for insights ---
+    # Bottleneck Logic
+    deals_with_c0 = filtered_df['C0 (Ideation/ Brainstorming Stage)'].notna().sum()
+    deals_with_c1 = filtered_df['C1 (Pitch Stage)'].notna().sum()
+    deals_with_c2 = filtered_df['C2 (Negotiation Stage)'].notna().sum()
+    deals_with_c3 = (filtered_df['C3 (Deal Closed Stage)'].str.strip() == 'Won').sum()
+    
+    c0_to_c1 = (deals_with_c1 / deals_with_c0 * 100) if deals_with_c0 > 0 else 0
+    c1_to_c2 = (deals_with_c2 / deals_with_c1 * 100) if deals_with_c1 > 0 else 0
+    c2_to_c3 = (deals_with_c3 / deals_with_c2 * 100) if deals_with_c2 > 0 else 0
+    
+    conv_data = pd.Series({'C0→C1': c0_to_c1, 'C1→C2': c1_to_c2, 'C2→C3': c2_to_c3})
+    bottleneck_stage = conv_data.idxmin()
+    bottleneck_rate = conv_data.min()
 
-else:
-    # ==========================================
-    # TAB 2: DEEP DIVE & INSIGHTS
-    # ==========================================
-    st.markdown("## Deep Dive Analysis")
-    
-    # 1. KPIs
-    total_pipeline = total_data['C0'] + total_data['C1'] + total_data['C2']
-    total_closed = total_data['C3']
-    conversion_rate = (total_closed / total_pipeline * 100) if total_pipeline > 0 else 0
-    
-    kpi1, kpi2, kpi3 = st.columns(3)
-    kpi1.metric("Total Pipeline (C0-C2)", f"₹{total_pipeline/10000000:.1f} Cr")
-    kpi2.metric("Total Closed (C3)", f"₹{total_closed/10000000:.1f} Cr", delta=f"{conversion_rate:.1f}% Conv. Rate")
-    
-    # Top Brand
-    brand_perf = filtered_df.groupby('Brand Name')['C3'].sum().sort_values(ascending=False)
-    top_brand = brand_perf.index[0] if not brand_perf.empty else "N/A"
-    top_brand_val = brand_perf.iloc[0] if not brand_perf.empty else 0
-    kpi3.metric("Top Brand (by Closed Deal)", top_brand, f"₹{top_brand_val/10000000:.1f} Cr")
-    
-    st.markdown("---")
-    
-    # 2. Advanced Charts (Row 1)
-    row1_col1, row1_col2 = st.columns(2)
-    
-    with row1_col1:
-        # Group by AVP
-        avp_metrics = filtered_df.groupby('AVP')[['C0', 'C1', 'C2', 'C3']].sum().reset_index()
-        avp_metrics['Total Pipeline'] = (avp_metrics['C0'] + avp_metrics['C1'] + avp_metrics['C2']) / 10000000
-        avp_metrics['Realized Value'] = avp_metrics['C3'] / 10000000
-        
-        # Avoid Clutter: Filter out zero values if needed, or keep all
-        fig_scatter = px.scatter(
-            avp_metrics,
-            x='Total Pipeline',
-            y='Realized Value',
-            color='AVP',
-            size='Realized Value',
-            hover_name='AVP',
-            text='AVP',
-            color_discrete_sequence=px.colors.qualitative.Prism
-        )
-        fig_scatter.update_traces(textposition='top center')
-        fig_scatter.update_layout(
-            xaxis_title="Pipeline Opportunity (₹ Cr)",
-            yaxis_title="Closed Revenue (₹ Cr)",
-            showlegend=False,
-            height=320,
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="#E7E9EA"),
-            margin=dict(t=15, b=35, l=35, r=15)
-        )
-        st.markdown('<div class="chart-header">Conversion Efficiency</div>', unsafe_allow_html=True)
-        st.plotly_chart(fig_scatter, use_container_width=True, config={'displayModeBar': True, 'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'select2d'], 'displaylogo': False})
-        
-    with row1_col2:
-        # Group for Treemap - Filter out nulls
-        tree_df = filtered_df[filtered_df['C3'] > 0].copy()
-        # Remove rows with null or empty Type/Brand Name
-        tree_df = tree_df.dropna(subset=['Type', 'Brand Name'])
-        tree_df = tree_df[(tree_df['Type'].str.strip() != '') & (tree_df['Brand Name'].str.strip() != '')]
-        
-        if not tree_df.empty:
-            fig_tree = px.treemap(
-                tree_df,
-                path=[px.Constant("All"), 'Type', 'Brand Name'],
-                values='C3',
-                color='C3',
-                color_continuous_scale='Greens'
-            )
-            fig_tree.update_layout(
-                height=320,
-                margin=dict(t=15, l=5, r=5, b=5),
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color="#E7E9EA")
-            )
-            st.markdown('<div class="chart-header">Revenue Landscape</div>', unsafe_allow_html=True)
-            st.plotly_chart(fig_tree, use_container_width=True, config={'displayModeBar': True, 'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'select2d'], 'displaylogo': False})
-        else:
-            st.info("No closed deals to display in Treemap.")
-
-    # 3. Trends & Performance (Row 2)
-    row2_col1, row2_col2 = st.columns(2)
-    
-    with row2_col1:
-        avp_perf = filtered_df.groupby('AVP')['C3'].sum().reset_index().sort_values('C3', ascending=True)
-        avp_perf['C3_Cr'] = avp_perf['C3'] / 10000000
-        
-        fig_avp = px.bar(avp_perf, y='AVP', x='C3_Cr', orientation='h', text_auto='.1f', color='C3_Cr', color_continuous_scale='Blues')
-        fig_avp.update_layout(
-            xaxis_title="C3 Value (₹ Cr)", 
-            yaxis_title=None, 
-            showlegend=False, 
-            height=300, 
-            paper_bgcolor="rgba(0,0,0,0)", 
-            plot_bgcolor="rgba(0,0,0,0)", 
-            font=dict(color="#E7E9EA"),
-            margin=dict(t=15, b=35, l=15, r=15)
-        )
-        st.markdown('<div class="chart-header">AVP Leaderboard</div>', unsafe_allow_html=True)
-        st.plotly_chart(fig_avp, use_container_width=True, config={'displayModeBar': True, 'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'select2d'], 'displaylogo': False})
-
-    with row2_col2:
-        monthly_trend = agg_df.copy()
-        monthly_trend['C0_Cr'] = monthly_trend['C0'] / 10000000
-        monthly_trend['C3_Cr'] = monthly_trend['C3'] / 10000000
-        
-        fig_trend = go.Figure()
-        fig_trend.add_trace(go.Scatter(x=monthly_trend['Month_Year'], y=monthly_trend['C0_Cr'], mode='lines+markers', name='C0 (Ideation)'))
-        fig_trend.add_trace(go.Scatter(x=monthly_trend['Month_Year'], y=monthly_trend['C3_Cr'], mode='lines+markers', name='C3 (Closed)'))
-        fig_trend.update_layout(
-            yaxis_title="Value (₹ Cr)", 
-            hovermode="x unified", 
-            legend=dict(orientation="h", y=1.2, x=0), 
-            height=300, 
-            paper_bgcolor="rgba(0,0,0,0)", 
-            plot_bgcolor="rgba(0,0,0,0)", 
-            font=dict(color="#E7E9EA"),
-            margin=dict(t=15, b=35, l=35, r=15)
-        )
-        st.markdown('<div class="chart-header">Monthly Revenue Trend</div>', unsafe_allow_html=True)
-        st.plotly_chart(fig_trend, use_container_width=True, config={'displayModeBar': True, 'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'select2d'], 'displaylogo': False})
-
-    # 4. Advanced AI Insights
-    st.markdown("### 🤖 Advanced AI Insights")
-    
     insights = []
     
     # A. Forecast & Potential Unlock
@@ -993,32 +795,30 @@ else:
     if c2_potential > 0:
         insights.append(f"🔮 **Revenue Forecast**: Pipeline data suggests a potential unlock of **₹{c2_potential:.2f} Cr** from deals currently in 'Negotiation' (assuming 50% closure probability). Focus on closing these C2 deals.")
 
-    # B. Concentration Risk
+    # B. Bottleneck Alert
+    insights.append(f"⚠️ **Bottleneck Alert**: The lowest conversion rate is at **{bottleneck_stage}** stage (**{bottleneck_rate:.1f}%**). Focus on improving this transition to unlock pipeline potential.")
+
+    # C. Top Performer
+    if not avp_metrics.empty:
+        avp_metrics['Conv'] = (avp_metrics['Realized Value'] / avp_metrics['Total Pipeline']).fillna(0)
+        top_avp = avp_metrics.sort_values('Realized Value', ascending=False).iloc[0]
+        insights.append(f"🏆 **Top Performer**: **{top_avp['AVP']}** is leading with **₹{top_avp['Realized Value']:.1f} Cr** realized value and **{top_avp['Conv']*100:.1f}%** conversion rate.")
+
+    # D. Concentration Risk
     top_3_brands_val = brand_perf.head(3).sum()
     total_brands_val = brand_perf.sum()
     if total_brands_val > 0:
         conc_ratio = (top_3_brands_val / total_brands_val) * 100
-        if conc_ratio > 70:
-            insights.append(f"⚖️ **High Concentration Risk**: The top 3 brands contribute **{conc_ratio:.1f}%** of total closed revenue. Diversify efforts across other brands to mitigate risk.")
+        risk_level = "HIGH" if conc_ratio > 50 else "MEDIUM" if conc_ratio > 30 else "LOW"
+        insights.append(f"⚖️ **Concentration Risk ({risk_level})**: The top 3 brands contribute **{conc_ratio:.1f}%** of revenue. {'Consider diversifying client base.' if risk_level == 'HIGH' else 'Monitor closely.' if risk_level == 'MEDIUM' else 'Healthy distribution.'}")
 
-    # C. Stalled Opportunities (High Pipeline but Low Closure)
-    # Group by Brand, check High C1+C2 but Low C3
+    # E. Stalled Opportunities
     brand_pipeline = filtered_df.groupby('Brand Name')[['C1', 'C2', 'C3']].sum()
-    stalled_brands = brand_pipeline[(brand_pipeline['C1'] + brand_pipeline['C2'] > 50000000) & (brand_pipeline['C3'] == 0)] # > 5Cr pipeline, 0 closed
+    stalled_brands = brand_pipeline[(brand_pipeline['C1'] + brand_pipeline['C2'] > 50000000) & (brand_pipeline['C3'] == 0)]
     if not stalled_brands.empty:
         count_stalled = len(stalled_brands)
         example_brand = stalled_brands.index[0]
         insights.append(f"🐢 **Stalled Opportunities**: There are **{count_stalled}** brands (e.g., **{example_brand}**) with significant pipeline value (>₹5 Cr) but zero closures. Immediate review required.")
-
-    # D. Efficiency Insight
-    # Find AVP with High Pipeline but Low Conversion
-    if not avp_metrics.empty:
-        avp_metrics['Conv'] = (avp_metrics['Realized Value'] / avp_metrics['Total Pipeline']).fillna(0)
-        low_conv_avp = avp_metrics[avp_metrics['Total Pipeline'] > 5].sort_values('Conv').head(1) # >5Cr pipeline
-        if not low_conv_avp.empty:
-            name = low_conv_avp.iloc[0]['AVP']
-            rate = low_conv_avp.iloc[0]['Conv'] * 100
-            insights.append(f"🎯 **Coaching Opportunity**: **{name}** has a strong pipeline but a lower conversion rate (**{rate:.1f}%**). Support them in 'Negotiation' to 'Closed' transitions.")
 
     # Render Insights
     for i in insights:
@@ -1026,4 +826,317 @@ else:
     
     if not insights:
         st.success("✅ Dashboard reflects stable performance. No critical anomalies detected.")
+
+
+else:
+    # ==========================================
+    # TAB 2: DEEP DIVE & INSIGHTS
+    # ==========================================
+    
+    # Calculate KPIs needed for insights
+    total_pipeline = total_data['C0'] + total_data['C1'] + total_data['C2']
+    total_closed = total_data['C3']
+    total_pipeline_cr = total_pipeline / 10000000
+    total_closed_cr = total_closed / 10000000
+
+    # Calculate comprehensive AVP metrics for insight 3
+    avp_perf = filtered_df.groupby('AVP').agg({
+        'C0': 'sum',
+        'C1': 'sum',
+        'C2': 'sum',
+        'C3': 'sum'
+    }).reset_index()
+    avp_perf['Closed Revenue (Cr)'] = avp_perf['C3'] / 10000000
+
+    
+    # ROW 1: Pipeline Conversion Funnel Analytics
+    conv_col1, conv_col2 = st.columns(2)
+    
+    with conv_col1:
+        st.markdown('<div style="color: #E7E9EA; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">Stage Conversion Rates</div>', unsafe_allow_html=True)
+        # Calculate stage-wise deal counts
+        total_deals = len(filtered_df)
+        deals_with_c0 = filtered_df['C0 (Ideation/ Brainstorming Stage)'].notna().sum()
+        deals_with_c1 = filtered_df['C1 (Pitch Stage)'].notna().sum()
+        deals_with_c2 = filtered_df['C2 (Negotiation Stage)'].notna().sum()
+        deals_with_c3 = (filtered_df['C3 (Deal Closed Stage)'] == 'Won').sum()
+        
+        # Calculate conversion rates
+        c0_to_c1_rate = (deals_with_c1 / deals_with_c0 * 100) if deals_with_c0 > 0 else 0
+        c1_to_c2_rate = (deals_with_c2 / deals_with_c1 * 100) if deals_with_c1 > 0 else 0
+        c2_to_c3_rate = (deals_with_c3 / deals_with_c2 * 100) if deals_with_c2 > 0 else 0
+        overall_conv = (deals_with_c3 / deals_with_c0 * 100) if deals_with_c0 > 0 else 0
+        
+        conversion_data = pd.DataFrame({
+            'Stage': ['C0→C1', 'C1→C2', 'C2→C3', 'Overall'],
+            'Conversion Rate': [c0_to_c1_rate, c1_to_c2_rate, c2_to_c3_rate, overall_conv],
+            'Color': ['#1565C0', '#1976D2', '#42A5F5', '#00BA7C']
+        })
+        
+        # Chart logic follows below (Title moved to header row)
+
+        
+        fig_conv = go.Figure(data=[
+            go.Bar(
+                x=conversion_data['Conversion Rate'],
+                y=conversion_data['Stage'],
+                orientation='h',
+                text=[f'{x:.1f}%' for x in conversion_data['Conversion Rate']],
+                textposition='outside',
+                marker=dict(color=conversion_data['Color']),
+                hovertemplate='<b>%{y}</b><br>Conversion: %{x:.1f}%<extra></extra>'
+            )
+        ])
+        fig_conv.update_layout(
+            xaxis_title='Conversion Rate (%)',
+            yaxis_title=None,
+            height=213,
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#E7E9EA", size=10),
+            margin=dict(t=10, b=35, l=10, r=90),
+            showlegend=False,
+            bargap=0.4,
+            xaxis=dict(fixedrange=True),
+            yaxis=dict(fixedrange=True)
+        )
+        st.plotly_chart(fig_conv, use_container_width=True, config={'displayModeBar': False})
+    
+    with conv_col2:
+        st.markdown('<div style="color: #E7E9EA; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">Pipeline Health Metrics</div>', unsafe_allow_html=True)
+        # Metrics logic follows below
+
+        # Find bottleneck (lowest conversion rate)
+        min_conv_idx = conversion_data.iloc[:-1]['Conversion Rate'].idxmin()
+        bottleneck_stage = conversion_data.iloc[min_conv_idx]['Stage']
+        bottleneck_rate = conversion_data.iloc[min_conv_idx]['Conversion Rate']
+        
+        # Create metrics HTML manually to keep inside container
+        metrics_html = f"""
+        <div style='height: 213px; display: flex; flex-direction: column; justify-content: center; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 0.8rem;'>
+            <div style='display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 0.6rem; height: 100%;'>
+                <div style='background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; display: flex; flex-direction: column; justify-content: center;'>
+                    <div style='font-size: 0.75rem; color: #8B949E; margin-bottom: 0.3rem;'>Total Deals</div>
+                    <div style='font-size: 1.4rem; font-weight: 700; color: #E7E9EA;'>{deals_with_c0:,}</div>
+                </div>
+                <div style='background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; display: flex; flex-direction: column; justify-content: center;'>
+                    <div style='font-size: 0.75rem; color: #8B949E; margin-bottom: 0.3rem;'>Closed Deals</div>
+                    <div style='font-size: 1.4rem; font-weight: 700; color: #E7E9EA;'>{deals_with_c3:,}</div>
+                </div>
+                <div style='background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; display: flex; flex-direction: column; justify-content: center;'>
+                    <div style='font-size: 0.75rem; color: #8B949E; margin-bottom: 0.3rem;'>Win Rate</div>
+                    <div style='font-size: 1.4rem; font-weight: 700; color: #00BA7C;'>{overall_conv:.1f}%</div>
+                </div>
+                <div style='background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; display: flex; flex-direction: column; justify-content: center;'>
+                    <div style='font-size: 0.75rem; color: #8B949E; margin-bottom: 0.3rem;'>⚠️ Bottleneck</div>
+                    <div style='font-size: 1.1rem; font-weight: 700; color: #FCA5A5;'>{bottleneck_stage}</div>
+                    <div style='font-size: 0.8rem; color: #FED7D7;'>{bottleneck_rate:.1f}%</div>
+                </div>
+            </div>
+        </div>
+        """
+        st.markdown(metrics_html, unsafe_allow_html=True)
+    
+    st.markdown("<div style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
+    
+    # ROW 2: Team Performance Matrix
+    st.markdown('<div style="color: #E7E9EA; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">Performance Matrix: Pipeline vs Conversion</div>', unsafe_allow_html=True)
+    
+    # Calculate comprehensive AVP metrics
+    avp_perf = filtered_df.groupby('AVP').agg({
+        'C0': 'sum',
+        'C1': 'sum',
+        'C2': 'sum',
+        'C3': 'sum'
+    }).reset_index()
+    
+    avp_perf['Total Pipeline (Cr)'] = (avp_perf['C0'] + avp_perf['C1'] + avp_perf['C2']) / 10000000
+    avp_perf['Closed Revenue (Cr)'] = avp_perf['C3'] / 10000000
+    avp_perf['Conversion Rate (%)'] = (avp_perf['C3'] / avp_perf['C0'] * 100).fillna(0)
+    
+    # Count deals per AVP
+    avp_deal_counts = filtered_df.groupby('AVP').size().reset_index(name='Deal Count')
+    avp_perf = avp_perf.merge(avp_deal_counts, on='AVP')
+    avp_perf['Avg Deal Size (Cr)'] = (avp_perf['Closed Revenue (Cr)'] / avp_perf['Deal Count']).fillna(0)
+    
+    # Performance scatter plot - Full width
+    fig_perf = px.scatter(
+        avp_perf,
+        x='Total Pipeline (Cr)',
+        y='Conversion Rate (%)',
+        size='Closed Revenue (Cr)',
+        color='Closed Revenue (Cr)',
+        text='AVP',
+        color_continuous_scale='Viridis',
+        hover_data={'Total Pipeline (Cr)': ':.2f', 
+                   'Conversion Rate (%)': ':.1f',
+                   'Closed Revenue (Cr)': ':.2f',
+                   'Avg Deal Size (Cr)': ':.2f'}
+    )
+    fig_perf.update_traces(textposition='top center', textfont=dict(size=11))
+    fig_perf.update_layout(
+        xaxis_title='Total Pipeline (₹ Cr)',
+        yaxis_title='Conversion Rate (%)',
+        height=198,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="#E7E9EA", size=10),
+        margin=dict(t=10, b=30, l=45, r=40),
+        xaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', fixedrange=True),
+        yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', fixedrange=True),
+        showlegend=False
+    )
+    st.plotly_chart(fig_perf, use_container_width=True, config={'displayModeBar': False})
+    
+    st.markdown("<div style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
+    
+    # ROW 3: Revenue Analysis
+    rev_col1, rev_col2 = st.columns(2)
+    
+    with rev_col1:
+        st.markdown('<div style="color: #E7E9EA; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">Top 5 Brands by Revenue</div>', unsafe_allow_html=True)
+        # Top brands revenue concentration
+        brand_revenue = filtered_df.groupby('Brand Name')['C3'].sum().sort_values(ascending=False)
+        top_5_brands = brand_revenue.head(5)
+        total_revenue = brand_revenue.sum()
+        
+        top_5_df = pd.DataFrame({
+            'Brand': top_5_brands.index,
+            'Revenue (Cr)': top_5_brands.values / 10000000,
+            '% of Total': (top_5_brands.values / total_revenue * 100) if total_revenue > 0 else 0
+        })
+        
+        fig_brands = go.Figure(data=[
+            go.Bar(
+                y=top_5_df['Brand'],
+                x=top_5_df['Revenue (Cr)'],
+                orientation='h',
+                text=[f'₹{x:.1f}Cr ({p:.1f}%)' for x, p in zip(top_5_df['Revenue (Cr)'], top_5_df['% of Total'])],
+                textposition='outside',
+                marker=dict(color='#00BA7C', line=dict(color='#00BA7C', width=1)),
+                hovertemplate='<b>%{y}</b><br>Revenue: ₹%{x:.2f}Cr<extra></extra>'
+            )
+        ])
+        fig_brands.update_layout(
+            xaxis_title='Revenue (₹ Cr)',
+            yaxis_title=None,
+            height=198,
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#E7E9EA", size=10),
+            margin=dict(t=10, b=35, l=10, r=140),
+            yaxis=dict(autorange="reversed", fixedrange=True),
+            xaxis=dict(fixedrange=True),
+            bargap=0.4
+        )
+        st.plotly_chart(fig_brands, use_container_width=True, config={'displayModeBar': False})
+    
+    with rev_col2:
+        st.markdown('<div style="color: #E7E9EA; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">Pipeline vs Closed Revenue Trends (with Forecast)</div>', unsafe_allow_html=True)
+        # Monthly trend with insights
+        monthly_trend = agg_df.copy()
+        monthly_trend['C0_Cr'] = monthly_trend['C0'] / 10000000
+        monthly_trend['C3_Cr'] = monthly_trend['C3'] / 10000000
+        monthly_trend['Pipeline Coverage'] = (monthly_trend['C0'] / monthly_trend['C3']).fillna(0)
+        
+        # Simple linear regression forecast for next 2 months (using numpy only)
+        import numpy as np
+        
+        # Prepare data for forecasting
+        n_months = len(monthly_trend)
+        X = np.arange(n_months)
+        
+        # Simple linear regression function
+        def simple_forecast(x, y, future_x):
+            # Calculate slope and intercept
+            x_mean = np.mean(x)
+            y_mean = np.mean(y)
+            slope = np.sum((x - x_mean) * (y - y_mean)) / np.sum((x - x_mean) ** 2)
+            intercept = y_mean - slope * x_mean
+            # Predict future values
+            return slope * future_x + intercept
+        
+        # Forecast Pipeline (C0) and Closed (C3)
+        y_c0 = monthly_trend['C0_Cr'].values
+        y_c3 = monthly_trend['C3_Cr'].values
+        
+        # Generate forecasts for next 2 months (Feb 2026, Mar 2026)
+        future_months = ['Feb 2026', 'Mar 2026']
+        forecast_c0 = [simple_forecast(X, y_c0, n_months), simple_forecast(X, y_c0, n_months + 1)]
+        forecast_c3 = [simple_forecast(X, y_c3, n_months), simple_forecast(X, y_c3, n_months + 1)]
+
+        
+        # Combine actual and forecast data
+        all_months = list(monthly_trend['Month_Year']) + future_months
+        
+        fig_trend = go.Figure()
+        
+        # Actual Pipeline (C0) - solid line
+        fig_trend.add_trace(go.Scatter(
+            x=monthly_trend['Month_Year'], 
+            y=monthly_trend['C0_Cr'], 
+            mode='lines+markers+text', 
+            name='Pipeline (C0)',
+            line=dict(color='#1565C0', width=2),
+            marker=dict(size=8),
+            text=[f'₹{val:.1f}Cr' for val in monthly_trend['C0_Cr']],
+            textposition='top center',
+            textfont=dict(size=7)
+        ))
+        
+        # Forecast Pipeline (C0) - dashed line
+        fig_trend.add_trace(go.Scatter(
+            x=[monthly_trend['Month_Year'].iloc[-1]] + future_months,
+            y=[monthly_trend['C0_Cr'].iloc[-1]] + list(forecast_c0),
+            mode='lines+markers+text',
+            name='Pipeline (Forecast)',
+            line=dict(color='#1565C0', width=2, dash='dash'),
+            marker=dict(size=8, symbol='diamond'),
+            text=[''] + [f'₹{val:.1f}Cr' for val in forecast_c0],
+            textposition='top center',
+            textfont=dict(size=7)
+        ))
+        
+        # Actual Closed (C3) - solid line
+        fig_trend.add_trace(go.Scatter(
+            x=monthly_trend['Month_Year'], 
+            y=monthly_trend['C3_Cr'], 
+            mode='lines+markers+text', 
+            name='Closed (C3)',
+            line=dict(color='#00BA7C', width=2),
+            marker=dict(size=8),
+            text=[f'₹{val:.1f}Cr' for val in monthly_trend['C3_Cr']],
+            textposition='bottom center',
+            textfont=dict(size=7)
+        ))
+        
+        # Forecast Closed (C3) - dashed line
+        fig_trend.add_trace(go.Scatter(
+            x=[monthly_trend['Month_Year'].iloc[-1]] + future_months,
+            y=[monthly_trend['C3_Cr'].iloc[-1]] + list(forecast_c3),
+            mode='lines+markers+text',
+            name='Closed (Forecast)',
+            line=dict(color='#00BA7C', width=2, dash='dash'),
+            marker=dict(size=8, symbol='diamond'),
+            text=[''] + [f'₹{val:.1f}Cr' for val in forecast_c3],
+            textposition='bottom center',
+            textfont=dict(size=7)
+        ))
+        
+        fig_trend.update_layout(
+            yaxis_title='Value (₹ Cr)',
+            xaxis_title=None,
+            hovermode='x unified',
+            legend=dict(orientation="h", y=1.15, x=0, bgcolor='rgba(0,0,0,0)', font=dict(size=9)),
+            height=198,
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#E7E9EA", size=10),
+            margin=dict(t=45, b=30, l=45, r=45),
+            xaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', fixedrange=True),
+            yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', fixedrange=True)
+        )
+        st.plotly_chart(fig_trend, use_container_width=True, config={'displayModeBar': False})
+    
+
 
