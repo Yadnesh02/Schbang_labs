@@ -197,9 +197,10 @@ st.markdown("""
         border: 1px solid #2F3336;
         border-radius: 12px;
         padding: 0.5rem !important;
-        margin-bottom: 2rem !important; /* Restored from 0.5rem for stability */
+        margin-bottom: 0.5rem !important; /* Reduced to pull next section up */
         width: 100% !important;
-        height: 450px !important; 
+        height: auto !important; 
+        min-height: 150px;
         overflow: hidden; /* Restored to prevent row bleeding */
         box-sizing: border-box;
     }
@@ -209,9 +210,9 @@ st.markdown("""
         margin-top: 1rem !important; /* Moved down slightly */
         margin-bottom: 0.5rem !important;
         text-align: left !important;
-        margin-left: 15px !important;
+        margin-left: 0 !important;
         font-weight: 600;
-        font-size: 1.6rem;
+        font-size: 1rem;
         color: #E7E9EA;
         height: 1.5rem;
         display: flex;
@@ -229,13 +230,13 @@ st.markdown("""
         border-radius: 12px;
         overflow: hidden;
         margin-top: 0 !important;
-        margin-bottom: 2rem !important; /* Restored for spacing */
+        margin-bottom: 0.5rem !important; /* Reduced to pull next section up */
         padding: 0 !important;
     }
     
     .scroll-area {
-        height: 450px !important; /* Increased from 350px to match larger charts */
-        max-height: 450px !important;
+        height: 207px !important; /* Synced with Funnel Chart height */
+        max-height: 207px !important;
         overflow-y: hidden; /* Remove scrollbar */
     }
 
@@ -304,10 +305,24 @@ st.markdown("""
     [role="option"] {
         color: #E7E9EA !important;
         background-color: #16181C !important;
+        font-size: 0.8rem !important;
+        padding-top: 4px !important;
+        padding-bottom: 4px !important;
+    }
+    
+    /* Expand dropdown width */
+    [role="listbox"] {
+        min-width: 250px !important;
     }
     
     [role="option"]:hover {
         background-color: #1A1D23 !important;
+    }
+    
+    /* Shrink multiselect tags */
+    [data-testid="stMultiSelect"] [data-baseweb="tag"] {
+        font-size: 0.7rem !important;
+        height: 22px !important;
     }
     
     /* Fix selectbox text */
@@ -364,38 +379,38 @@ st.markdown("""
     
     /* MacBook Pro 16" & Large Laptops (1728px+) - Optimal */
     @media (min-width: 1728px) {
-        .pipeline-table { font-size: 0.85rem; }
+        .pipeline-table { font-size: 0.9rem; }
         .chart-header { font-size: 1.1rem; }
     }
     
     /* MacBook Pro 14" & Standard Laptops (1512px - 1727px) */
     @media (max-width: 1727px) and (min-width: 1512px) {
         .dashboard-title { font-size: 1.5rem !important; }
-        .pipeline-table { font-size: 0.8rem; }
+        .pipeline-table { font-size: 0.85rem; }
         .chart-header { font-size: 1.05rem; }
-        div[data-testid="stPlotlyChart"] { height: 280px !important; }
-        .scroll-area { height: 285px !important; max-height: 285px !important; }
+        div[data-testid="stPlotlyChart"] { height: auto !important; }
+        .scroll-area { height: 207px !important; max-height: 207px !important; }
     }
     
     /* MacBook Pro 13" & Medium Laptops (1440px - 1511px) */
     @media (max-width: 1511px) and (min-width: 1440px) {
         .dashboard-title { font-size: 1.4rem !important; }
-        .pipeline-table { font-size: 0.75rem; }
+        .pipeline-table { font-size: 0.8rem; }
         .pipeline-table th, .pipeline-table td { padding: 0.6rem 0.8rem; }
         .chart-header { font-size: 1rem; }
-        div[data-testid="stPlotlyChart"] { height: 260px !important; }
-        .scroll-area { height: 265px !important; max-height: 265px !important; }
+        div[data-testid="stPlotlyChart"] { height: auto !important; }
+        .scroll-area { height: 207px !important; max-height: 207px !important; }
         .header-container { padding: 0.4rem 0 0.6rem 0 !important; }
     }
     
     /* MacBook Air & Smaller Laptops (1366px - 1439px) */
     @media (max-width: 1439px) and (min-width: 1366px) {
         .dashboard-title { font-size: 1.3rem !important; }
-        .pipeline-table { font-size: 0.7rem; }
+        .pipeline-table { font-size: 0.75rem; }
         .pipeline-table th, .pipeline-table td { padding: 0.5rem 0.7rem; }
         .chart-header { font-size: 0.95rem; }
-        div[data-testid="stPlotlyChart"] { height: 240px !important; }
-        .scroll-area { height: 245px !important; max-height: 245px !important; }
+        div[data-testid="stPlotlyChart"] { height: auto !important; }
+        .scroll-area { height: 207px !important; max-height: 207px !important; }
         .insights-scroll-area { max-height: 220px; }
         .header-container { padding: 0.3rem 0 0.5rem 0 !important; }
         [data-testid="stHorizontalBlock"] { gap: 0.4rem !important; }
@@ -404,11 +419,11 @@ st.markdown("""
     /* Small Laptops & Tablets (1200px - 1365px) */
     @media (max-width: 1365px) and (min-width: 1200px) {
         .dashboard-title { font-size: 1.2rem !important; }
-        .pipeline-table { font-size: 0.65rem; }
+        .pipeline-table { font-size: 0.7rem; }
         .pipeline-table th, .pipeline-table td { padding: 0.4rem 0.6rem; }
         .chart-header { font-size: 0.9rem; }
-        div[data-testid="stPlotlyChart"] { height: 220px !important; }
-        .scroll-area { height: 225px !important; max-height: 225px !important; }
+        div[data-testid="stPlotlyChart"] { height: auto !important; }
+        .scroll-area { height: 207px !important; max-height: 207px !important; }
         .insights-scroll-area { max-height: 200px; }
         [data-testid="stHorizontalBlock"] {
             flex-wrap: wrap !important;
@@ -420,11 +435,11 @@ st.markdown("""
     /* Tablets & Small Screens (768px - 1199px) */
     @media (max-width: 1199px) and (min-width: 768px) {
         .dashboard-title { font-size: 1.1rem !important; }
-        .pipeline-table { font-size: 0.6rem; }
+        .pipeline-table { font-size: 0.65rem; }
         .pipeline-table th, .pipeline-table td { padding: 0.35rem 0.5rem; }
         .chart-header, .stMarkdown h3 { font-size: 0.85rem !important; }
-        div[data-testid="stPlotlyChart"] { height: 200px !important; }
-        .scroll-area { height: 205px !important; max-height: 205px !important; }
+        div[data-testid="stPlotlyChart"] { height: auto !important; }
+        .scroll-area { height: 207px !important; max-height: 207px !important; }
         .insights-scroll-area { max-height: 180px; }
         [data-testid="stHorizontalBlock"] {
             flex-wrap: wrap !important;
@@ -435,7 +450,7 @@ st.markdown("""
     /* Mobile Devices (< 768px) */
     @media (max-width: 767px) {
         .dashboard-title { font-size: 1rem !important; }
-        .pipeline-table { font-size: 0.55rem; }
+        .pipeline-table { font-size: 0.6rem; }
         .pipeline-table th, .pipeline-table td { padding: 0.3rem 0.4rem; }
         .chart-header, .stMarkdown h3 { font-size: 0.8rem !important; }
         div[data-testid="stPlotlyChart"] { height: 180px !important; }
@@ -568,7 +583,7 @@ def prepare_shared_data(filtered_df):
 # --- Consolidated Header Row ---
 st.markdown('<div class="header-container">', unsafe_allow_html=True)
 # Ratios: Logo/Title, Nav Tabs, Type Toggle, Month, SBUs
-col_brand, col_tabs, col_type, col_month, col_sbu = st.columns([2.5, 1.4, 0.9, 0.8, 0.8])
+col_brand, col_tabs, col_type, col_month, col_sbu = st.columns([1.8, 1.6, 1.0, 1.0, 1.0])
 
 with col_brand:
     # Look for common logo filenames
@@ -678,7 +693,7 @@ if tab_choice == "Executive Overview":
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(color="#E7E9EA", size=10),
-        height=230,
+        height=207,
         showlegend=False,
         yaxis=dict(
             showticklabels=False,
@@ -771,7 +786,7 @@ if tab_choice == "Executive Overview":
         st.plotly_chart(fig, use_container_width=True, config={'responsive': True, 'displayModeBar': False})
 
     # 4. c0c3 Insights (Consolidated Executive Insights)
-    st.markdown('<div class="chart-header" style="margin-top: 0.25rem; margin-bottom: 1rem;">🤖 c0c3 Insights</div>', unsafe_allow_html=True)
+    st.markdown('<div class="chart-header" style="margin-top: -1rem; margin-bottom: 0.5rem;">C0-C3 Insights</div>', unsafe_allow_html=True)
     
     # --- Calculate metrics for insights ---
     # Bottleneck Logic
@@ -850,10 +865,10 @@ else:
 
     
     # ROW 1: Pipeline Conversion Funnel Analytics
-    conv_col1, conv_col2 = st.columns(2)
+    conv_col1, conv_col2 = st.columns([1.6, 1])
     
     with conv_col1:
-        st.markdown('<div style="color: #E7E9EA; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">Stage Conversion Rates</div>', unsafe_allow_html=True)
+        st.markdown('<div class="chart-header">Stage Conversion Rates</div>', unsafe_allow_html=True)
         # Calculate stage-wise deal counts
         total_deals = len(filtered_df)
         deals_with_c0 = filtered_df['C0 (Ideation/ Brainstorming Stage)'].notna().sum()
@@ -868,9 +883,9 @@ else:
         overall_conv = (deals_with_c3 / deals_with_c0 * 100) if deals_with_c0 > 0 else 0
         
         conversion_data = pd.DataFrame({
-            'Stage': ['C0→C1', 'C1→C2', 'C2→C3', 'Overall'],
-            'Conversion Rate': [c0_to_c1_rate, c1_to_c2_rate, c2_to_c3_rate, overall_conv],
-            'Color': ['#1565C0', '#1976D2', '#42A5F5', '#00BA7C']
+            'Stage': ['Overall', 'C2→C3', 'C1→C2', 'C0→C1'],
+            'Conversion Rate': [overall_conv, c2_to_c3_rate, c1_to_c2_rate, c0_to_c1_rate],
+            'Color': ['#00BA7C', '#42A5F5', '#1976D2', '#1565C0']
         })
         
         # Chart logic follows below (Title moved to header row)
@@ -890,20 +905,20 @@ else:
         fig_conv.update_layout(
             xaxis_title='Conversion Rate (%)',
             yaxis_title=None,
-            height=213,
+            height=202,
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             font=dict(color="#E7E9EA", size=10),
-            margin=dict(t=10, b=35, l=10, r=90),
+            margin=dict(t=10, b=35, l=10, r=40),
             showlegend=False,
             bargap=0.4,
-            xaxis=dict(fixedrange=True),
+            xaxis=dict(fixedrange=True, range=[0, 100]),
             yaxis=dict(fixedrange=True)
         )
         st.plotly_chart(fig_conv, use_container_width=True, config={'displayModeBar': False})
     
     with conv_col2:
-        st.markdown('<div style="color: #E7E9EA; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">Pipeline Health Metrics</div>', unsafe_allow_html=True)
+        st.markdown('<div class="chart-header">Pipeline Health Metrics</div>', unsafe_allow_html=True)
         # Metrics logic follows below
 
         # Find bottleneck (lowest conversion rate)
@@ -913,7 +928,7 @@ else:
         
         # Create metrics HTML manually to keep inside container
         metrics_html = f"""
-        <div style='height: 213px; display: flex; flex-direction: column; justify-content: center; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 0.8rem;'>
+        <div style='height: 202px; display: flex; flex-direction: column; justify-content: center; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 0.8rem;'>
             <div style='display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 0.6rem; height: 100%;'>
                 <div style='background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; display: flex; flex-direction: column; justify-content: center;'>
                     <div style='font-size: 0.75rem; color: #8B949E; margin-bottom: 0.3rem;'>Total Deals</div>
@@ -928,9 +943,8 @@ else:
                     <div style='font-size: 1.4rem; font-weight: 700; color: #00BA7C;'>{overall_conv:.1f}%</div>
                 </div>
                 <div style='background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; display: flex; flex-direction: column; justify-content: center;'>
-                    <div style='font-size: 0.75rem; color: #8B949E; margin-bottom: 0.3rem;'>⚠️ Bottleneck</div>
-                    <div style='font-size: 1.1rem; font-weight: 700; color: #FCA5A5;'>{bottleneck_stage}</div>
-                    <div style='font-size: 0.8rem; color: #FED7D7;'>{bottleneck_rate:.1f}%</div>
+                    <div style='font-size: 0.75rem; color: #8B949E; margin-bottom: 0.3rem;'>Realized (C3)</div>
+                    <div style='font-size: 1.4rem; font-weight: 700; color: #42A5F5;'>₹{total_data['C3']/10000000:.2f} Cr</div>
                 </div>
             </div>
         </div>
@@ -940,7 +954,7 @@ else:
     st.markdown("<div style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
     
     # ROW 2: Team Performance Matrix
-    st.markdown('<div style="color: #E7E9EA; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">Performance Matrix: Pipeline vs Conversion</div>', unsafe_allow_html=True)
+    st.markdown('<div class="chart-header">Performance Matrix: Pipeline vs Conversion</div>', unsafe_allow_html=True)
     
     # Calculate comprehensive AVP metrics
     avp_perf = filtered_df.groupby('AVP').agg({
@@ -974,16 +988,29 @@ else:
                    'Avg Deal Size (Cr)': ':.2f'}
     )
     fig_perf.update_traces(textposition='top center', textfont=dict(size=11))
+    
+    # Calculate y-axis range with padding to prevent label clipping
+    if len(avp_perf) > 0:
+        max_conversion = avp_perf['Conversion Rate (%)'].max()
+        y_max_perf = max_conversion * 1.30  # Add 30% padding above max value
+    else:
+        y_max_perf = 100
+    
     fig_perf.update_layout(
         xaxis_title='Total Pipeline (₹ Cr)',
         yaxis_title='Conversion Rate (%)',
-        height=198,
+        height=210,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(color="#E7E9EA", size=10),
-        margin=dict(t=10, b=30, l=45, r=40),
+        margin=dict(t=35, b=35, l=45, r=20),
         xaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', fixedrange=True),
-        yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', fixedrange=True),
+        yaxis=dict(
+            showgrid=True, 
+            gridcolor='rgba(255,255,255,0.05)', 
+            fixedrange=True,
+            range=[0, y_max_perf]
+        ),
         showlegend=False
     )
     st.plotly_chart(fig_perf, use_container_width=True, config={'displayModeBar': False})
@@ -994,45 +1021,83 @@ else:
     rev_col1, rev_col2 = st.columns(2)
     
     with rev_col1:
-        st.markdown('<div style="color: #E7E9EA; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">Top 5 Brands by Revenue</div>', unsafe_allow_html=True)
-        # Top brands revenue concentration
+        st.markdown('<div class="chart-header">Revenue Shares By Brands</div>', unsafe_allow_html=True)
+        # Top brands revenue concentration + Others
         brand_revenue = filtered_df.groupby('Brand Name')['C3'].sum().sort_values(ascending=False)
-        top_5_brands = brand_revenue.head(5)
         total_revenue = brand_revenue.sum()
         
-        top_5_df = pd.DataFrame({
-            'Brand': top_5_brands.index,
-            'Revenue (Cr)': top_5_brands.values / 10000000,
-            '% of Total': (top_5_brands.values / total_revenue * 100) if total_revenue > 0 else 0
-        })
-        
-        fig_brands = go.Figure(data=[
-            go.Bar(
-                y=top_5_df['Brand'],
-                x=top_5_df['Revenue (Cr)'],
-                orientation='h',
-                text=[f'₹{x:.1f}Cr ({p:.1f}%)' for x, p in zip(top_5_df['Revenue (Cr)'], top_5_df['% of Total'])],
-                textposition='outside',
-                marker=dict(color='#00BA7C', line=dict(color='#00BA7C', width=1)),
-                hovertemplate='<b>%{y}</b><br>Revenue: ₹%{x:.2f}Cr<extra></extra>'
+        if total_revenue > 0:
+            top_5 = brand_revenue.head(5)
+            others_sum = brand_revenue.iloc[5:].sum()
+            treemap_df = pd.DataFrame([
+                {'Brand': b, 'Revenue (Cr)': v / 10000000, 'Share': (v / total_revenue * 100)}
+                for b, v in top_5.items()
+            ])
+            
+            if others_sum > 0:
+                others_row = pd.DataFrame([{
+                    'Brand': 'Others',
+                    'Revenue (Cr)': others_sum / 10000000,
+                    'Share': (others_sum / total_revenue * 100)
+                }])
+                treemap_df = pd.concat([treemap_df, others_row], ignore_index=True)
+                
+            # Professional color palette - sophisticated gradient
+            color_palette = [
+                '#0A4D68',  # Deep teal (darkest)
+                '#088395',  # Ocean blue
+                '#05BFDB',  # Bright cyan
+                '#00D9FF',  # Vibrant cyan
+                '#7FDBFF',  # Light cyan
+                '#B8E6F0'   # Pale cyan (lightest - for Others)
+            ]
+            
+            # Assign colors based on revenue (highest to lowest)
+            treemap_df['Color'] = color_palette[:len(treemap_df)]
+            
+            # Determine text color based on background brightness
+            def get_text_color(hex_color):
+                # Convert hex to RGB
+                hex_color = hex_color.lstrip('#')
+                r, g, b = int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
+                # Calculate luminance
+                luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+                return '#FFFFFF' if luminance < 0.6 else '#1A1A1A'
+            
+            treemap_df['TextColor'] = treemap_df['Color'].apply(get_text_color)
+            
+            fig_brands = px.treemap(
+                treemap_df,
+                path=['Brand'],
+                values='Revenue (Cr)',
+                color='Color',
+                color_discrete_map={c: c for c in color_palette}
             )
-        ])
-        fig_brands.update_layout(
-            xaxis_title='Revenue (₹ Cr)',
-            yaxis_title=None,
-            height=198,
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="#E7E9EA", size=10),
-            margin=dict(t=10, b=35, l=10, r=140),
-            yaxis=dict(autorange="reversed", fixedrange=True),
-            xaxis=dict(fixedrange=True),
-            bargap=0.4
-        )
-        st.plotly_chart(fig_brands, use_container_width=True, config={'displayModeBar': False})
+            
+            fig_brands.update_traces(
+                textinfo="label+text",
+                text=[f"₹{r:.1f}Cr ({s:.1f}%)" for r, s in zip(treemap_df['Revenue (Cr)'], treemap_df['Share'])],
+                hovertemplate='<b>%{label}</b><br>Revenue: ₹%{value:.2f}Cr<extra></extra>',
+                textfont=dict(size=11),
+                marker=dict(
+                    colors=treemap_df['Color'].tolist(),
+                    line=dict(color='#2C2C2C', width=2)
+                )
+            )
+            
+            fig_brands.update_layout(
+                height=198,
+                margin=dict(t=5, b=5, l=5, r=5),
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                coloraxis_showscale=False
+            )
+            st.plotly_chart(fig_brands, use_container_width=True, config={'displayModeBar': False})
+        else:
+            st.info("No C3 revenue data available for current selection.")
     
     with rev_col2:
-        st.markdown('<div style="color: #E7E9EA; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">Pipeline vs Closed Revenue Trends (with Forecast)</div>', unsafe_allow_html=True)
+        st.markdown('<div class="chart-header">Pipeline vs Closed Revenue Trends (with Forecast)</div>', unsafe_allow_html=True)
         # Monthly trend with insights
         monthly_trend = agg_df.copy()
         monthly_trend['C0_Cr'] = monthly_trend['C0'] / 10000000
@@ -1123,18 +1188,36 @@ else:
             textfont=dict(size=7)
         ))
         
+        # Calculate y-axis range with padding to prevent label clipping
+        all_values = list(monthly_trend['C0_Cr']) + list(monthly_trend['C3_Cr']) + list(forecast_c0) + list(forecast_c3)
+        max_value = max(all_values)
+        y_max = max_value * 1.25  # Add 25% padding above max value
+        
         fig_trend.update_layout(
             yaxis_title='Value (₹ Cr)',
             xaxis_title=None,
             hovermode='x unified',
-            legend=dict(orientation="h", y=1.15, x=0, bgcolor='rgba(0,0,0,0)', font=dict(size=9)),
-            height=198,
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="center",
+                x=0.5,
+                bgcolor='rgba(0,0,0,0)',
+                font=dict(size=9)
+            ),
+            height=220,
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             font=dict(color="#E7E9EA", size=10),
             margin=dict(t=45, b=30, l=45, r=45),
             xaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', fixedrange=True),
-            yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', fixedrange=True)
+            yaxis=dict(
+                showgrid=True, 
+                gridcolor='rgba(255,255,255,0.05)', 
+                fixedrange=True,
+                range=[0, y_max]
+            )
         )
         st.plotly_chart(fig_trend, use_container_width=True, config={'displayModeBar': False})
     
