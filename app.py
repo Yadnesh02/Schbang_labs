@@ -912,7 +912,7 @@ else:
             xaxis=dict(fixedrange=True, range=[0, 100]),
             yaxis=dict(fixedrange=True)
         )
-        st.plotly_chart(fig_conv, use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False}, key="funnel_chart")
+        st.plotly_chart(fig_conv, use_container_width=True, config={'displayModeBar': False})
     
     with conv_col2:
         st.markdown('<div class="chart-header">Pipeline Health Metrics</div>', unsafe_allow_html=True)
@@ -1010,7 +1010,7 @@ else:
         ),
         showlegend=False
     )
-    st.plotly_chart(fig_perf, use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False}, key="perf_matrix")
+    st.plotly_chart(fig_perf, use_container_width=True, config={'displayModeBar': False})
     
     st.markdown("<div style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
     
@@ -1089,7 +1089,7 @@ else:
                 plot_bgcolor="rgba(0,0,0,0)",
                 coloraxis_showscale=False
             )
-            st.plotly_chart(fig_brands, use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False}, key="treemap_chart")
+            st.plotly_chart(fig_brands, use_container_width=True, config={'displayModeBar': False})
         else:
             st.info("No C3 revenue data available for current selection.")
     
@@ -1216,7 +1216,7 @@ else:
                 range=[0, y_max]
             )
         )
-        st.plotly_chart(fig_trend, use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False}, key="trends_chart")
+        st.plotly_chart(fig_trend, use_container_width=True, config={'displayModeBar': False})
     
 
 
