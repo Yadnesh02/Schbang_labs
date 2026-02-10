@@ -17,15 +17,20 @@ def load_google_sheet_data():
         # Read CSV
         df = pd.read_csv(url)
         
+        # Strip whitespace from column names to prevent matching issues
+        df.columns = df.columns.astype(str).str.strip()
+        
         # Ensure we have the columns we expect to filter on
-        # BH -> Month222
-        # BF -> AVP
-        # B -> Brand Name
-        # C -> Type
+        # BH -> Month222, BF -> AVP, B -> Brand Name, C -> Type
+        required_cols = ['Month222', 'AVP', 'Brand Name', 'Type']
+        missing_cols = [col for col in required_cols if col not in df.columns]
+        
+        if missing_cols:
+            st.warning(f"Note: Some expected columns are missing: {', '.join(missing_cols)}. Dashboard functionality might be limited.")
+            # Map available columns as best as possible or continue
         
         # Parse Dates
         if 'Month222' in df.columns:
-            # Format appears to be dd/mm/yyyy based on 01/09/2025
             df['Month222'] = pd.to_datetime(df['Month222'], dayfirst=True, errors='coerce')
         
         return df
